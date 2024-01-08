@@ -1,0 +1,504 @@
++ cd /home/ids/hrami
++ pwd
++ echo 0,1
+++ conda shell.bash hook
++ eval 'export CONDA_EXE='\''/home/ids/hrami/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/ids/hrami/anaconda3/bin/python'\''
+
+# Copyright (C) 2012 Anaconda, Inc
+# SPDX-License-Identifier: BSD-3-Clause
+
+__conda_exe() (
+    "$CONDA_EXE" $_CE_M $_CE_CONDA "$@"
+)
+
+__conda_hashr() {
+    if [ -n "${ZSH_VERSION:+x}" ]; then
+        \rehash
+    elif [ -n "${POSH_VERSION:+x}" ]; then
+        :  # pass
+    else
+        \hash -r
+    fi
+}
+
+__conda_activate() {
+    if [ -n "${CONDA_PS1_BACKUP:+x}" ]; then
+        # Handle transition from shell activated with conda <= 4.3 to a subsequent activation
+        # after conda updated to >= 4.4. See issue #6173.
+        PS1="$CONDA_PS1_BACKUP"
+        \unset CONDA_PS1_BACKUP
+    fi
+    \local ask_conda
+    ask_conda="$(PS1="${PS1:-}" __conda_exe shell.posix "$@")" || \return
+    \eval "$ask_conda"
+    __conda_hashr
+}
+
+__conda_reactivate() {
+    \local ask_conda
+    ask_conda="$(PS1="${PS1:-}" __conda_exe shell.posix reactivate)" || \return
+    \eval "$ask_conda"
+    __conda_hashr
+}
+
+conda() {
+    \local cmd="${1-__missing__}"
+    case "$cmd" in
+        activate|deactivate)
+            __conda_activate "$@"
+            ;;
+        install|update|upgrade|remove|uninstall)
+            __conda_exe "$@" || \return
+            __conda_reactivate
+            ;;
+        *)
+            __conda_exe "$@"
+            ;;
+    esac
+}
+
+if [ -z "${CONDA_SHLVL+x}" ]; then
+    \export CONDA_SHLVL=0
+    # In dev-mode CONDA_EXE is python.exe and on Windows
+    # it is in a different relative location to condabin.
+    if [ -n "${_CE_CONDA:+x}" ] && [ -n "${WINDIR+x}" ]; then
+        PATH="$(\dirname "$CONDA_EXE")/condabin${PATH:+":${PATH}"}"
+    else
+        PATH="$(\dirname "$(\dirname "$CONDA_EXE")")/condabin${PATH:+":${PATH}"}"
+    fi
+    \export PATH
+
+    # We'\''re not allowing PS1 to be unbound. It must at least be set.
+    # However, we'\''re not exporting it, which can cause problems when starting a second shell
+    # via a first shell (i.e. starting zsh from bash).
+    if [ -z "${PS1+x}" ]; then
+        PS1=
+    fi
+fi
+
+conda activate base'
+++ export CONDA_EXE=/home/ids/hrami/anaconda3/bin/conda
+++ CONDA_EXE=/home/ids/hrami/anaconda3/bin/conda
+++ export _CE_M=
+++ _CE_M=
+++ export _CE_CONDA=
+++ _CE_CONDA=
+++ export CONDA_PYTHON_EXE=/home/ids/hrami/anaconda3/bin/python
+++ CONDA_PYTHON_EXE=/home/ids/hrami/anaconda3/bin/python
+++ '[' -z x ']'
+++ conda activate base
+++ local cmd=activate
+++ case "$cmd" in
+++ __conda_activate activate base
+++ '[' -n '' ']'
+++ local ask_conda
++++ PS1=
++++ __conda_exe shell.posix activate base
++++ /home/ids/hrami/anaconda3/bin/conda shell.posix activate base
+++ ask_conda='PS1='\''(base) '\''
+export PATH='\''/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'\''
+export CONDA_PREFIX='\''/home/ids/hrami/anaconda3'\''
+export CONDA_SHLVL='\''3'\''
+export CONDA_DEFAULT_ENV='\''base'\''
+export CONDA_PROMPT_MODIFIER='\''(base) '\''
+export CONDA_PREFIX_2='\''/home/ids/hrami/anaconda3/envs/s2p'\''
+export CONDA_EXE='\''/home/ids/hrami/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/ids/hrami/anaconda3/bin/python'\'''
+++ eval 'PS1='\''(base) '\''
+export PATH='\''/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'\''
+export CONDA_PREFIX='\''/home/ids/hrami/anaconda3'\''
+export CONDA_SHLVL='\''3'\''
+export CONDA_DEFAULT_ENV='\''base'\''
+export CONDA_PROMPT_MODIFIER='\''(base) '\''
+export CONDA_PREFIX_2='\''/home/ids/hrami/anaconda3/envs/s2p'\''
+export CONDA_EXE='\''/home/ids/hrami/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/ids/hrami/anaconda3/bin/python'\'''
++++ PS1='(base) '
++++ export PATH=/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++++ PATH=/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++++ export CONDA_PREFIX=/home/ids/hrami/anaconda3
++++ CONDA_PREFIX=/home/ids/hrami/anaconda3
++++ export CONDA_SHLVL=3
++++ CONDA_SHLVL=3
++++ export CONDA_DEFAULT_ENV=base
++++ CONDA_DEFAULT_ENV=base
++++ export 'CONDA_PROMPT_MODIFIER=(base) '
++++ CONDA_PROMPT_MODIFIER='(base) '
++++ export CONDA_PREFIX_2=/home/ids/hrami/anaconda3/envs/s2p
++++ CONDA_PREFIX_2=/home/ids/hrami/anaconda3/envs/s2p
++++ export CONDA_EXE=/home/ids/hrami/anaconda3/bin/conda
++++ CONDA_EXE=/home/ids/hrami/anaconda3/bin/conda
++++ export _CE_M=
++++ _CE_M=
++++ export _CE_CONDA=
++++ _CE_CONDA=
++++ export CONDA_PYTHON_EXE=/home/ids/hrami/anaconda3/bin/python
++++ CONDA_PYTHON_EXE=/home/ids/hrami/anaconda3/bin/python
+++ __conda_hashr
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ hash -r
++ conda init bash
++ local cmd=init
++ case "$cmd" in
++ __conda_exe init bash
++ /home/ids/hrami/anaconda3/bin/conda init bash
++ conda activate s2p
++ local cmd=activate
++ case "$cmd" in
++ __conda_activate activate s2p
++ '[' -n '' ']'
++ local ask_conda
+++ PS1='(base) '
+++ __conda_exe shell.posix activate s2p
+++ /home/ids/hrami/anaconda3/bin/conda shell.posix activate s2p
++ ask_conda='PS1='\''(s2p) '\''
+export PATH='\''/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/envs/s2p/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'\''
+export CONDA_PREFIX='\''/home/ids/hrami/anaconda3/envs/s2p'\''
+export CONDA_SHLVL='\''4'\''
+export CONDA_DEFAULT_ENV='\''s2p'\''
+export CONDA_PROMPT_MODIFIER='\''(s2p) '\''
+export CONDA_PREFIX_3='\''/home/ids/hrami/anaconda3'\''
+export CONDA_EXE='\''/home/ids/hrami/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/ids/hrami/anaconda3/bin/python'\'''
++ eval 'PS1='\''(s2p) '\''
+export PATH='\''/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/envs/s2p/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'\''
+export CONDA_PREFIX='\''/home/ids/hrami/anaconda3/envs/s2p'\''
+export CONDA_SHLVL='\''4'\''
+export CONDA_DEFAULT_ENV='\''s2p'\''
+export CONDA_PROMPT_MODIFIER='\''(s2p) '\''
+export CONDA_PREFIX_3='\''/home/ids/hrami/anaconda3'\''
+export CONDA_EXE='\''/home/ids/hrami/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/ids/hrami/anaconda3/bin/python'\'''
+++ PS1='(s2p) '
+++ export PATH=/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/envs/s2p/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+++ PATH=/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/envs/s2p/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+++ export CONDA_PREFIX=/home/ids/hrami/anaconda3/envs/s2p
+++ CONDA_PREFIX=/home/ids/hrami/anaconda3/envs/s2p
+++ export CONDA_SHLVL=4
+++ CONDA_SHLVL=4
+++ export CONDA_DEFAULT_ENV=s2p
+++ CONDA_DEFAULT_ENV=s2p
+++ export 'CONDA_PROMPT_MODIFIER=(s2p) '
+++ CONDA_PROMPT_MODIFIER='(s2p) '
+++ export CONDA_PREFIX_3=/home/ids/hrami/anaconda3
+++ CONDA_PREFIX_3=/home/ids/hrami/anaconda3
+++ export CONDA_EXE=/home/ids/hrami/anaconda3/bin/conda
+++ CONDA_EXE=/home/ids/hrami/anaconda3/bin/conda
+++ export _CE_M=
+++ _CE_M=
+++ export _CE_CONDA=
+++ _CE_CONDA=
+++ export CONDA_PYTHON_EXE=/home/ids/hrami/anaconda3/bin/python
+++ CONDA_PYTHON_EXE=/home/ids/hrami/anaconda3/bin/python
++ __conda_hashr
++ '[' -n '' ']'
++ '[' -n '' ']'
++ hash -r
++ echo 'Virtual environment activated'
++ ./S2P/run_s2p_train.sh SpCL_test_4 --epochs 2 --iters 120 --KDloss 0.1 --MMDloss 0.1
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torch/distributed/launch.py:180: FutureWarning: The module torch.distributed.launch is deprecated
+and will be removed in future. Use torchrun.
+Note that --use_env is set by default in torchrun.
+If your script expects `--local_rank` argument to be set, please
+change it to read from `os.environ['LOCAL_RANK']` instead. See 
+https://pytorch.org/docs/stable/distributed.html#launch-utility for 
+further instructions
+
+  warnings.warn(
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-09-19 11:29:17.559705: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2023-09-19 11:29:17.611889: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-09-19 11:29:22.587829: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.bias', 'fc.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.weight', 'fc.bias'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+bruteForceKnn is deprecated; call bfKnn instead
+[W reducer.cpp:1298] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1298] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+bruteForceKnn is deprecated; call bfKnn instead
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:72: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  fst_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.25)
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:73: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  trd_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.75)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:72: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  fst_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.25)
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:73: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  trd_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.75)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:53: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
+  plt.scatter(Y[:, 0], Y[:, 1], c=color, cmap=plt.cm.Spectral)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.weight', 'fc.bias'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:53: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
+  plt.scatter(Y[:, 0], Y[:, 1], c=color, cmap=plt.cm.Spectral)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.bias', 'fc.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+bruteForceKnn is deprecated; call bfKnn instead
+bruteForceKnn is deprecated; call bfKnn instead
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:72: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  fst_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.25)
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:73: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  trd_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.75)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:72: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  fst_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.25)
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:73: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  trd_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.75)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:53: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
+  plt.scatter(Y[:, 0], Y[:, 1], c=color, cmap=plt.cm.Spectral)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.weight', 'fc.bias'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:53: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
+  plt.scatter(Y[:, 0], Y[:, 1], c=color, cmap=plt.cm.Spectral)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.bias', 'fc.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+bruteForceKnn is deprecated; call bfKnn instead
+bruteForceKnn is deprecated; call bfKnn instead
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:72: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  fst_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.25)
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:73: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  trd_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.75)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:72: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  fst_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.25)
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:73: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  trd_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.75)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:53: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
+  plt.scatter(Y[:, 0], Y[:, 1], c=color, cmap=plt.cm.Spectral)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.weight', 'fc.bias'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:53: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
+  plt.scatter(Y[:, 0], Y[:, 1], c=color, cmap=plt.cm.Spectral)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.bias', 'fc.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+bruteForceKnn is deprecated; call bfKnn instead
+bruteForceKnn is deprecated; call bfKnn instead
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/data/builder.py:107: UserWarning: No labels are provided for cuhk03-np.
+  warnings.warn("No labels are provided for {}.".format(dn))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:72: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  fst_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.25)
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:73: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  trd_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.75)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:72: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  fst_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.25)
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:73: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  trd_quantile = torch.quantile(torch.tensor(similarities.max(axis=1)[0]),0.75)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:53: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
+  plt.scatter(Y[:, 0], Y[:, 1], c=color, cmap=plt.cm.Spectral)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.weight', 'fc.bias'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/./S2P/OpenUnReID/tools/SpCL/main.py:53: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
+  plt.scatter(Y[:, 0], Y[:, 1], c=color, cmap=plt.cm.Spectral)
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'fc.bias', 'fc.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/S2P/OpenUnReID/openunreid/utils/torch_utils.py:74: UserWarning: unexpected keys in checkpoint: {'classifier.weight'}
+  warnings.warn("unexpected keys in checkpoint: {}".format(unexpected_keys))
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+/home/ids/hrami/anaconda3/envs/s2p/lib/python3.10/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+bruteForceKnn is deprecated; call bfKnn instead
+bruteForceKnn is deprecated; call bfKnn instead
++ wait
++ conda deactivate
++ local cmd=deactivate
++ case "$cmd" in
++ __conda_activate deactivate
++ '[' -n '' ']'
++ local ask_conda
+++ PS1='(s2p) '
+++ __conda_exe shell.posix deactivate
+++ /home/ids/hrami/anaconda3/bin/conda shell.posix deactivate
++ ask_conda='export PATH='\''/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'\''
+unset CONDA_PREFIX_3
+PS1='\''(base) '\''
+export CONDA_PREFIX='\''/home/ids/hrami/anaconda3'\''
+export CONDA_SHLVL='\''3'\''
+export CONDA_DEFAULT_ENV='\''base'\''
+export CONDA_PROMPT_MODIFIER='\''(base) '\''
+export CONDA_EXE='\''/home/ids/hrami/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/ids/hrami/anaconda3/bin/python'\'''
++ eval 'export PATH='\''/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'\''
+unset CONDA_PREFIX_3
+PS1='\''(base) '\''
+export CONDA_PREFIX='\''/home/ids/hrami/anaconda3'\''
+export CONDA_SHLVL='\''3'\''
+export CONDA_DEFAULT_ENV='\''base'\''
+export CONDA_PROMPT_MODIFIER='\''(base) '\''
+export CONDA_EXE='\''/home/ids/hrami/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/ids/hrami/anaconda3/bin/python'\'''
+++ export PATH=/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+++ PATH=/home/ids/hrami/path/to/anaconda:/home/ids/hrami/.local/bin:/home/ids/hrami/path/to/anaconda:/home/ids/hrami/anaconda3/bin:/home/ids/hrami/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+++ unset CONDA_PREFIX_3
+++ PS1='(base) '
+++ export CONDA_PREFIX=/home/ids/hrami/anaconda3
+++ CONDA_PREFIX=/home/ids/hrami/anaconda3
+++ export CONDA_SHLVL=3
+++ CONDA_SHLVL=3
+++ export CONDA_DEFAULT_ENV=base
+++ CONDA_DEFAULT_ENV=base
+++ export 'CONDA_PROMPT_MODIFIER=(base) '
+++ CONDA_PROMPT_MODIFIER='(base) '
+++ export CONDA_EXE=/home/ids/hrami/anaconda3/bin/conda
+++ CONDA_EXE=/home/ids/hrami/anaconda3/bin/conda
+++ export _CE_M=
+++ _CE_M=
+++ export _CE_CONDA=
+++ _CE_CONDA=
+++ export CONDA_PYTHON_EXE=/home/ids/hrami/anaconda3/bin/python
+++ CONDA_PYTHON_EXE=/home/ids/hrami/anaconda3/bin/python
++ __conda_hashr
++ '[' -n '' ']'
++ '[' -n '' ']'
++ hash -r
++ echo 'python scripts have finished'

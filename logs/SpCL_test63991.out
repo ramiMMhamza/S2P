@@ -1,0 +1,2352 @@
+/home/ids/hrami
+0,1
+no change     /home/ids/hrami/anaconda3/condabin/conda
+no change     /home/ids/hrami/anaconda3/bin/conda
+no change     /home/ids/hrami/anaconda3/bin/conda-env
+no change     /home/ids/hrami/anaconda3/bin/activate
+no change     /home/ids/hrami/anaconda3/bin/deactivate
+no change     /home/ids/hrami/anaconda3/etc/profile.d/conda.sh
+no change     /home/ids/hrami/anaconda3/etc/fish/conf.d/conda.fish
+no change     /home/ids/hrami/anaconda3/shell/condabin/Conda.psm1
+no change     /home/ids/hrami/anaconda3/shell/condabin/conda-hook.ps1
+no change     /home/ids/hrami/anaconda3/lib/python3.9/site-packages/xontrib/conda.xsh
+no change     /home/ids/hrami/anaconda3/etc/profile.d/conda.csh
+no change     /home/ids/hrami/.bashrc
+No action taken.
+Virtual environment activated
+training on slurm Cluster
+training on slurm Cluster
+gpu 0
+gpu 1
+==========
+Args:Namespace(config='./S2P/OpenUnReID/tools/SpCL/config.yaml', work_dir='./SpCL_test_4/', resume_from=None, launcher='pytorch', tcp_port='34659', epochs=2, iters=120, KDloss=0.1, KD='S2P', MMDloss=0.1, exec=2.0, set_cfgs=None)
+==========
+cfg.LOCAL_RANK: 0
+cfg.DATA_ROOT: data/OpenUnReID/datasets
+cfg.DATA_ROOT_cluster: ./data/OpenUnReID/datasets/
+cfg.LOGS_ROOT: logs
+cfg.LOGS_ROOT_cluster: ./logs/
+
+cfg.MODEL = edict()
+cfg.MODEL.backbone: resnet50
+cfg.MODEL.backbone_path: ./data/OpenUnReID/pretrained/resnet/resnet50-19c8e357.pth
+cfg.MODEL.backbone_path_cluster: ./data/OpenUnReID/pretrained/resnet/resnet50-19c8e357.pth
+cfg.MODEL.pooling: gem
+cfg.MODEL.embed_feat: 0
+cfg.MODEL.dropout: 0.0
+cfg.MODEL.dsbn: True
+cfg.MODEL.sync_bn: False
+cfg.MODEL.samples_per_bn: 16
+cfg.MODEL.mean_net: True
+cfg.MODEL.alpha: 0.999
+cfg.MODEL.imagenet_pretrained: True
+cfg.MODEL.source_pretrained: ./data/OpenUnReID/pretrained/source_pretrain_randperson/model_best.pth
+cfg.MODEL.source_pretrained_cluster: ./data/OpenUnReID/pretrained/source_pretrain_randperson/model_best.pth
+
+cfg.DATA = edict()
+cfg.DATA.height: 256
+cfg.DATA.width: 128
+cfg.DATA.norm_mean: [0.485, 0.456, 0.406]
+cfg.DATA.norm_std: [0.229, 0.224, 0.225]
+
+cfg.DATA.TRAIN = edict()
+cfg.DATA.TRAIN.is_autoaug: False
+cfg.DATA.TRAIN.is_flip: True
+cfg.DATA.TRAIN.flip_prob: 0.5
+cfg.DATA.TRAIN.is_pad: True
+cfg.DATA.TRAIN.pad_size: 10
+cfg.DATA.TRAIN.is_blur: False
+cfg.DATA.TRAIN.blur_prob: 0.5
+cfg.DATA.TRAIN.is_erase: True
+cfg.DATA.TRAIN.erase_prob: 0.5
+cfg.DATA.TRAIN.is_mutual_transform: False
+cfg.DATA.TRAIN.mutual_times: 2
+
+cfg.TRAIN = edict()
+cfg.TRAIN.seed: 1
+cfg.TRAIN.deterministic: True
+cfg.TRAIN.amp: False
+
+cfg.TRAIN.datasets = edict()
+cfg.TRAIN.datasets.cuhk03-np: trainval
+cfg.TRAIN.datasets.custom_randperson: train
+cfg.TRAIN.unsup_dataset_indexes: [0]
+cfg.TRAIN.sup_dataset_indexes: [1]
+cfg.TRAIN.filtre: [True, False]
+cfg.TRAIN.epochs: 2
+cfg.TRAIN.iters: 120
+
+cfg.TRAIN.LOSS = edict()
+
+cfg.TRAIN.LOSS.losses = edict()
+cfg.TRAIN.LOSS.losses.hybrid_memory: 1.0
+cfg.TRAIN.LOSS.losses.kd_loss: 0.1
+cfg.TRAIN.LOSS.losses.MMD_loss: 0.1
+cfg.TRAIN.LOSS.temp: 0.05
+cfg.TRAIN.LOSS.momentum: 0.2
+cfg.TRAIN.val_dataset: cuhk03-np
+cfg.TRAIN.val_freq: 2
+
+cfg.TRAIN.SAMPLER = edict()
+cfg.TRAIN.SAMPLER.num_instances: 4
+cfg.TRAIN.SAMPLER.is_shuffle: True
+
+cfg.TRAIN.LOADER = edict()
+cfg.TRAIN.LOADER.samples_per_gpu: 16
+cfg.TRAIN.LOADER.workers_per_gpu: 2
+
+cfg.TRAIN.PSEUDO_LABELS = edict()
+cfg.TRAIN.PSEUDO_LABELS.freq: 1
+cfg.TRAIN.PSEUDO_LABELS.use_outliers: True
+cfg.TRAIN.PSEUDO_LABELS.norm_feat: True
+cfg.TRAIN.PSEUDO_LABELS.norm_center: True
+cfg.TRAIN.PSEUDO_LABELS.cluster: dbscan
+cfg.TRAIN.PSEUDO_LABELS.eps: [0.58, 0.6, 0.62]
+cfg.TRAIN.PSEUDO_LABELS.min_samples: 4
+cfg.TRAIN.PSEUDO_LABELS.dist_metric: jaccard
+cfg.TRAIN.PSEUDO_LABELS.k1: 30
+cfg.TRAIN.PSEUDO_LABELS.k2: 6
+cfg.TRAIN.PSEUDO_LABELS.search_type: 0
+cfg.TRAIN.PSEUDO_LABELS.cluster_num: None
+cfg.TRAIN.PSEUDO_LABELS.mode: coupled_sigmoid
+cfg.TRAIN.PSEUDO_LABELS.lambda_: 2
+cfg.TRAIN.PSEUDO_LABELS.weighted_clustering: False
+cfg.TRAIN.PSEUDO_LABELS.dist_cuda: True
+
+cfg.TRAIN.OPTIM = edict()
+cfg.TRAIN.OPTIM.optim: adam
+cfg.TRAIN.OPTIM.lr: 0.00035
+cfg.TRAIN.OPTIM.weight_decay: 0.0005
+
+cfg.TRAIN.SCHEDULER = edict()
+cfg.TRAIN.SCHEDULER.lr_scheduler: linear
+cfg.TRAIN.SCHEDULER.stepsize: 20
+cfg.TRAIN.SCHEDULER.gamma: 0.1
+cfg.TRAIN.SCHEDULER.max_epoch: 5
+cfg.TRAIN.SCHEDULER.n_epochs_init: 2
+cfg.TRAIN.SCHEDULER.n_epochs_decay: 10
+
+cfg.TEST = edict()
+cfg.TEST.datasets: ['msmt17', 'cuhk03-np']
+
+cfg.TEST.LOADER = edict()
+cfg.TEST.LOADER.samples_per_gpu: 32
+cfg.TEST.LOADER.workers_per_gpu: 2
+cfg.TEST.dist_metric: euclidean
+cfg.TEST.norm_feat: True
+cfg.TEST.dist_cuda: True
+cfg.TEST.rerank: False
+cfg.TEST.search_type: 0
+cfg.TEST.k1: 20
+cfg.TEST.k2: 6
+cfg.TEST.lambda_value: 0.3
+cfg.TEST.visrankactiv: True
+cfg.launcher: pytorch
+cfg.tcp_port: 34659
+cfg.KD: S2P
+cfg.exec: 2.0
+cfg.work_dir: logs/SpCL_test_4
+cfg.rank: 0
+cfg.ngpus_per_node: 2
+cfg.gpu: 0
+cfg.total_gpus: 2
+cfg.world_size: 2
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 0
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+      1 |     1413 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+=> Loaded checkpoint './data/OpenUnReID/pretrained/source_pretrain_randperson/model_best.pth'
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 0
+Loading randperson dataset
+[1mExtract: [ 0/23][0m	Time 1.080 (1.080)	Data 0.259 (0.259)
+[1mExtract: [10/23][0m	Time 0.108 (0.158)	Data 0.055 (0.038)
+[1mExtract: [20/23][0m	Time 0.071 (0.123)	Data 0.024 (0.037)
+[1mExtract: [   0/2065][0m	Time 0.271 (0.271)	Data 0.212 (0.212)
+[1mExtract: [  10/2065][0m	Time 0.142 (0.115)	Data 0.090 (0.063)
+[1mExtract: [  20/2065][0m	Time 0.100 (0.098)	Data 0.050 (0.047)
+[1mExtract: [  30/2065][0m	Time 0.151 (0.096)	Data 0.100 (0.047)
+[1mExtract: [  40/2065][0m	Time 0.108 (0.093)	Data 0.057 (0.043)
+[1mExtract: [  50/2065][0m	Time 0.102 (0.090)	Data 0.049 (0.040)
+[1mExtract: [  60/2065][0m	Time 0.140 (0.089)	Data 0.087 (0.039)
+[1mExtract: [  70/2065][0m	Time 0.121 (0.087)	Data 0.069 (0.037)
+[1mExtract: [  80/2065][0m	Time 0.097 (0.086)	Data 0.045 (0.036)
+[1mExtract: [  90/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [ 100/2065][0m	Time 0.047 (0.084)	Data 0.000 (0.034)
+[1mExtract: [ 110/2065][0m	Time 0.047 (0.083)	Data 0.000 (0.033)
+[1mExtract: [ 120/2065][0m	Time 0.047 (0.082)	Data 0.000 (0.033)
+[1mExtract: [ 130/2065][0m	Time 0.047 (0.082)	Data 0.000 (0.032)
+[1mExtract: [ 140/2065][0m	Time 0.047 (0.081)	Data 0.000 (0.032)
+[1mExtract: [ 150/2065][0m	Time 0.091 (0.081)	Data 0.043 (0.031)
+[1mExtract: [ 160/2065][0m	Time 0.098 (0.081)	Data 0.048 (0.032)
+[1mExtract: [ 170/2065][0m	Time 0.119 (0.081)	Data 0.066 (0.032)
+[1mExtract: [ 180/2065][0m	Time 0.093 (0.081)	Data 0.045 (0.032)
+[1mExtract: [ 190/2065][0m	Time 0.106 (0.081)	Data 0.055 (0.032)
+[1mExtract: [ 200/2065][0m	Time 0.112 (0.081)	Data 0.061 (0.032)
+[1mExtract: [ 210/2065][0m	Time 0.123 (0.081)	Data 0.072 (0.032)
+[1mExtract: [ 220/2065][0m	Time 0.127 (0.081)	Data 0.079 (0.032)
+[1mExtract: [ 230/2065][0m	Time 0.117 (0.081)	Data 0.069 (0.032)
+[1mExtract: [ 240/2065][0m	Time 0.087 (0.081)	Data 0.039 (0.032)
+[1mExtract: [ 250/2065][0m	Time 0.106 (0.081)	Data 0.058 (0.031)
+[1mExtract: [ 260/2065][0m	Time 0.093 (0.080)	Data 0.043 (0.031)
+[1mExtract: [ 270/2065][0m	Time 0.083 (0.080)	Data 0.035 (0.031)
+[1mExtract: [ 280/2065][0m	Time 0.090 (0.080)	Data 0.041 (0.031)
+[1mExtract: [ 290/2065][0m	Time 0.092 (0.080)	Data 0.042 (0.031)
+[1mExtract: [ 300/2065][0m	Time 0.100 (0.079)	Data 0.047 (0.030)
+[1mExtract: [ 310/2065][0m	Time 0.099 (0.079)	Data 0.047 (0.030)
+[1mExtract: [ 320/2065][0m	Time 0.069 (0.079)	Data 0.020 (0.030)
+[1mExtract: [ 330/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 340/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 350/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 360/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 370/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 380/2065][0m	Time 0.047 (0.078)	Data 0.000 (0.030)
+[1mExtract: [ 390/2065][0m	Time 0.047 (0.078)	Data 0.000 (0.030)
+[1mExtract: [ 400/2065][0m	Time 0.047 (0.078)	Data 0.000 (0.030)
+[1mExtract: [ 410/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 420/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 430/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 440/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 450/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 460/2065][0m	Time 0.050 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 470/2065][0m	Time 0.052 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 480/2065][0m	Time 0.046 (0.078)	Data 0.000 (0.030)
+[1mExtract: [ 490/2065][0m	Time 0.047 (0.078)	Data 0.000 (0.030)
+[1mExtract: [ 500/2065][0m	Time 0.052 (0.079)	Data 0.000 (0.030)
+[1mExtract: [ 510/2065][0m	Time 0.048 (0.078)	Data 0.000 (0.030)
+[1mExtract: [ 520/2065][0m	Time 0.046 (0.078)	Data 0.000 (0.030)
+[1mExtract: [ 530/2065][0m	Time 0.046 (0.078)	Data 0.000 (0.029)
+[1mExtract: [ 540/2065][0m	Time 0.046 (0.078)	Data 0.000 (0.029)
+[1mExtract: [ 550/2065][0m	Time 0.047 (0.078)	Data 0.000 (0.029)
+[1mExtract: [ 560/2065][0m	Time 0.060 (0.078)	Data 0.013 (0.029)
+[1mExtract: [ 570/2065][0m	Time 0.047 (0.078)	Data 0.001 (0.029)
+[1mExtract: [ 580/2065][0m	Time 0.047 (0.078)	Data 0.000 (0.029)
+[1mExtract: [ 590/2065][0m	Time 0.051 (0.078)	Data 0.004 (0.029)
+[1mExtract: [ 600/2065][0m	Time 0.046 (0.078)	Data 0.000 (0.029)
+[1mExtract: [ 610/2065][0m	Time 0.046 (0.078)	Data 0.000 (0.030)
+[1mExtract: [ 620/2065][0m	Time 0.058 (0.078)	Data 0.010 (0.030)
+[1mExtract: [ 630/2065][0m	Time 0.065 (0.078)	Data 0.018 (0.030)
+[1mExtract: [ 640/2065][0m	Time 0.069 (0.078)	Data 0.021 (0.030)
+[1mExtract: [ 650/2065][0m	Time 0.126 (0.078)	Data 0.076 (0.030)
+[1mExtract: [ 660/2065][0m	Time 0.087 (0.078)	Data 0.039 (0.029)
+[1mExtract: [ 670/2065][0m	Time 0.111 (0.078)	Data 0.062 (0.029)
+[1mExtract: [ 680/2065][0m	Time 0.102 (0.078)	Data 0.053 (0.029)
+[1mExtract: [ 690/2065][0m	Time 0.105 (0.078)	Data 0.056 (0.029)
+[1mExtract: [ 700/2065][0m	Time 0.097 (0.078)	Data 0.047 (0.029)
+[1mExtract: [ 710/2065][0m	Time 0.106 (0.078)	Data 0.057 (0.029)
+[1mExtract: [ 720/2065][0m	Time 0.094 (0.078)	Data 0.044 (0.029)
+[1mExtract: [ 730/2065][0m	Time 0.091 (0.078)	Data 0.041 (0.029)
+[1mExtract: [ 740/2065][0m	Time 0.095 (0.078)	Data 0.045 (0.029)
+[1mExtract: [ 750/2065][0m	Time 0.100 (0.078)	Data 0.049 (0.029)
+[1mExtract: [ 760/2065][0m	Time 0.104 (0.078)	Data 0.054 (0.029)
+[1mExtract: [ 770/2065][0m	Time 0.108 (0.078)	Data 0.057 (0.029)
+[1mExtract: [ 780/2065][0m	Time 0.207 (0.078)	Data 0.156 (0.029)
+[1mExtract: [ 790/2065][0m	Time 0.189 (0.078)	Data 0.138 (0.030)
+[1mExtract: [ 800/2065][0m	Time 0.232 (0.079)	Data 0.180 (0.031)
+[1mExtract: [ 810/2065][0m	Time 0.108 (0.080)	Data 0.058 (0.031)
+[1mExtract: [ 820/2065][0m	Time 0.106 (0.080)	Data 0.058 (0.031)
+[1mExtract: [ 830/2065][0m	Time 0.113 (0.079)	Data 0.064 (0.031)
+[1mExtract: [ 840/2065][0m	Time 0.106 (0.079)	Data 0.057 (0.031)
+[1mExtract: [ 850/2065][0m	Time 0.118 (0.079)	Data 0.068 (0.031)
+[1mExtract: [ 860/2065][0m	Time 0.104 (0.079)	Data 0.054 (0.031)
+[1mExtract: [ 870/2065][0m	Time 0.096 (0.079)	Data 0.046 (0.031)
+[1mExtract: [ 880/2065][0m	Time 0.131 (0.079)	Data 0.082 (0.031)
+[1mExtract: [ 890/2065][0m	Time 0.099 (0.079)	Data 0.047 (0.031)
+[1mExtract: [ 900/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 910/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 920/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 930/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 940/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 950/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 960/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 970/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 980/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [ 990/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1000/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1010/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1020/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1030/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1040/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1050/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1060/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1070/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1080/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1090/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1100/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1110/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1120/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1130/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1140/2065][0m	Time 0.049 (0.079)	Data 0.003 (0.031)
+[1mExtract: [1150/2065][0m	Time 0.097 (0.079)	Data 0.050 (0.031)
+[1mExtract: [1160/2065][0m	Time 0.109 (0.079)	Data 0.058 (0.031)
+[1mExtract: [1170/2065][0m	Time 0.088 (0.079)	Data 0.041 (0.031)
+[1mExtract: [1180/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1190/2065][0m	Time 0.057 (0.079)	Data 0.009 (0.031)
+[1mExtract: [1200/2065][0m	Time 0.080 (0.079)	Data 0.032 (0.031)
+[1mExtract: [1210/2065][0m	Time 0.051 (0.079)	Data 0.004 (0.031)
+[1mExtract: [1220/2065][0m	Time 0.055 (0.079)	Data 0.009 (0.031)
+[1mExtract: [1230/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1240/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1250/2065][0m	Time 0.047 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1260/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1270/2065][0m	Time 0.046 (0.079)	Data 0.000 (0.031)
+[1mExtract: [1280/2065][0m	Time 0.052 (0.079)	Data 0.005 (0.031)
+[1mExtract: [1290/2065][0m	Time 0.100 (0.079)	Data 0.051 (0.031)
+[1mExtract: [1300/2065][0m	Time 0.101 (0.079)	Data 0.052 (0.031)
+[1mExtract: [1310/2065][0m	Time 0.052 (0.079)	Data 0.005 (0.031)
+[1mExtract: [1320/2065][0m	Time 0.071 (0.079)	Data 0.023 (0.031)
+[1mExtract: [1330/2065][0m	Time 0.145 (0.080)	Data 0.095 (0.031)
+[1mExtract: [1340/2065][0m	Time 0.113 (0.080)	Data 0.064 (0.031)
+[1mExtract: [1350/2065][0m	Time 0.137 (0.080)	Data 0.089 (0.031)
+[1mExtract: [1360/2065][0m	Time 0.164 (0.080)	Data 0.114 (0.031)
+[1mExtract: [1370/2065][0m	Time 0.130 (0.080)	Data 0.079 (0.032)
+[1mExtract: [1380/2065][0m	Time 0.119 (0.080)	Data 0.070 (0.032)
+[1mExtract: [1390/2065][0m	Time 0.138 (0.080)	Data 0.090 (0.032)
+[1mExtract: [1400/2065][0m	Time 0.084 (0.080)	Data 0.035 (0.032)
+[1mExtract: [1410/2065][0m	Time 0.099 (0.080)	Data 0.047 (0.032)
+[1mExtract: [1420/2065][0m	Time 0.079 (0.080)	Data 0.032 (0.032)
+[1mExtract: [1430/2065][0m	Time 0.091 (0.080)	Data 0.041 (0.031)
+[1mExtract: [1440/2065][0m	Time 0.049 (0.080)	Data 0.002 (0.031)
+[1mExtract: [1450/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1460/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1470/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.031)
+[1mExtract: [1480/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.031)
+[1mExtract: [1490/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1500/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1510/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1520/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1530/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1540/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1550/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1560/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1570/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1580/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1590/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1600/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1610/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1620/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1630/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1640/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1650/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1660/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1670/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1680/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1690/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1700/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.032)
+[1mExtract: [1710/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.031)
+[1mExtract: [1720/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.031)
+[1mExtract: [1730/2065][0m	Time 0.046 (0.080)	Data 0.000 (0.031)
+[1mExtract: [1740/2065][0m	Time 0.082 (0.080)	Data 0.035 (0.031)
+[1mExtract: [1750/2065][0m	Time 0.080 (0.080)	Data 0.031 (0.031)
+[1mExtract: [1760/2065][0m	Time 0.106 (0.080)	Data 0.055 (0.031)
+[1mExtract: [1770/2065][0m	Time 0.101 (0.080)	Data 0.052 (0.031)
+[1mExtract: [1780/2065][0m	Time 0.082 (0.080)	Data 0.033 (0.031)
+[1mExtract: [1790/2065][0m	Time 0.049 (0.080)	Data 0.002 (0.031)
+[1mExtract: [1800/2065][0m	Time 0.098 (0.080)	Data 0.045 (0.031)
+[1mExtract: [1810/2065][0m	Time 0.086 (0.080)	Data 0.038 (0.031)
+[1mExtract: [1820/2065][0m	Time 0.102 (0.080)	Data 0.054 (0.031)
+[1mExtract: [1830/2065][0m	Time 0.067 (0.080)	Data 0.020 (0.031)
+[1mExtract: [1840/2065][0m	Time 0.098 (0.080)	Data 0.048 (0.031)
+[1mExtract: [1850/2065][0m	Time 0.091 (0.080)	Data 0.041 (0.031)
+[1mExtract: [1860/2065][0m	Time 0.069 (0.079)	Data 0.022 (0.031)
+[1mExtract: [1870/2065][0m	Time 0.094 (0.079)	Data 0.044 (0.031)
+[1mExtract: [1880/2065][0m	Time 0.111 (0.079)	Data 0.060 (0.031)
+[1mExtract: [1890/2065][0m	Time 0.106 (0.079)	Data 0.058 (0.031)
+[1mExtract: [1900/2065][0m	Time 0.088 (0.079)	Data 0.039 (0.031)
+[1mExtract: [1910/2065][0m	Time 0.133 (0.079)	Data 0.084 (0.031)
+[1mExtract: [1920/2065][0m	Time 0.098 (0.079)	Data 0.049 (0.031)
+[1mExtract: [1930/2065][0m	Time 0.110 (0.079)	Data 0.062 (0.031)
+[1mExtract: [1940/2065][0m	Time 0.104 (0.079)	Data 0.055 (0.031)
+[1mExtract: [1950/2065][0m	Time 0.093 (0.079)	Data 0.045 (0.031)
+[1mExtract: [1960/2065][0m	Time 0.117 (0.079)	Data 0.069 (0.031)
+[1mExtract: [1970/2065][0m	Time 0.123 (0.079)	Data 0.072 (0.031)
+[1mExtract: [1980/2065][0m	Time 0.114 (0.079)	Data 0.064 (0.031)
+[1mExtract: [1990/2065][0m	Time 0.133 (0.079)	Data 0.083 (0.031)
+[1mExtract: [2000/2065][0m	Time 0.112 (0.079)	Data 0.063 (0.031)
+[1mExtract: [2010/2065][0m	Time 0.117 (0.079)	Data 0.067 (0.031)
+[1mExtract: [2020/2065][0m	Time 0.111 (0.079)	Data 0.061 (0.031)
+[1mExtract: [2030/2065][0m	Time 0.131 (0.079)	Data 0.080 (0.031)
+[1mExtract: [2040/2065][0m	Time 0.119 (0.079)	Data 0.069 (0.031)
+[1mExtract: [2050/2065][0m	Time 0.122 (0.079)	Data 0.074 (0.031)
+[1mExtract: [2060/2065][0m	Time 0.116 (0.079)	Data 0.069 (0.031)
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 0
+appel build valdataloader
+[1m=> Loaded val from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    153 |     1376 |         2
+  ----------------------------
+appel build teset dataloader
+[1m=> Loaded query from MSMT17[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   3060 |    11659 |        15
+  ----------------------------
+[1m=> Loaded gallery from MSMT17[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   3060 |    82161 |        15
+  ----------------------------
+[1m=> Loaded query from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    700 |     1400 |         2
+  ----------------------------
+[1m=> Loaded gallery from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    700 |     5328 |         2
+  ----------------------------
+start_training task 0
+
+************************* Start updating pseudo labels on epoch 0 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.4345498085021973
+[[2.3841858e-07 4.7683716e-07 4.6031743e-01 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ [4.7683716e-07 4.7683716e-07 4.6031743e-01 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ [4.6031743e-01 4.6031743e-01 0.0000000e+00 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ ...
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 0.0000000e+00
+  0.0000000e+00 0.0000000e+00]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 0.0000000e+00
+  0.0000000e+00 0.0000000e+00]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 0.0000000e+00
+  0.0000000e+00 0.0000000e+00]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 0: 89 clusters, 365 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    454 |     1413 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [0][  0/120][0m	Time 0.902 (0.902)	hybrid_memory 2.699 (2.699)	kd_loss 0.000 (0.000)	MMD_loss 0.292 (0.292)
+[1mEpoch: [0][ 10/120][0m	Time 0.474 (0.516)	hybrid_memory 1.881 (2.372)	kd_loss 0.000 (0.000)	MMD_loss 0.306 (0.294)
+[1mEpoch: [0][ 20/120][0m	Time 0.476 (0.512)	hybrid_memory 1.160 (2.253)	kd_loss 0.000 (0.000)	MMD_loss 0.314 (0.301)
+[1mEpoch: [0][ 30/120][0m	Time 0.489 (0.520)	hybrid_memory 1.552 (2.165)	kd_loss 0.000 (0.000)	MMD_loss 0.285 (0.300)
+[1mEpoch: [0][ 40/120][0m	Time 0.491 (0.512)	hybrid_memory 1.921 (2.184)	kd_loss 0.000 (0.000)	MMD_loss 0.321 (0.300)
+[1mEpoch: [0][ 50/120][0m	Time 0.479 (0.522)	hybrid_memory 2.096 (2.133)	kd_loss 0.000 (0.000)	MMD_loss 0.275 (0.300)
+[1mEpoch: [0][ 60/120][0m	Time 0.462 (0.513)	hybrid_memory 2.211 (2.105)	kd_loss 0.000 (0.000)	MMD_loss 0.335 (0.300)
+[1mEpoch: [0][ 70/120][0m	Time 0.462 (0.518)	hybrid_memory 0.977 (2.033)	kd_loss 0.000 (0.000)	MMD_loss 0.315 (0.303)
+[1mEpoch: [0][ 80/120][0m	Time 0.485 (0.512)	hybrid_memory 1.701 (2.009)	kd_loss 0.000 (0.000)	MMD_loss 0.344 (0.302)
+[1mEpoch: [0][ 90/120][0m	Time 0.845 (0.518)	hybrid_memory 1.766 (1.965)	kd_loss 0.000 (0.000)	MMD_loss 0.292 (0.304)
+[1mEpoch: [0][100/120][0m	Time 0.461 (0.514)	hybrid_memory 1.377 (1.957)	kd_loss 0.000 (0.000)	MMD_loss 0.343 (0.305)
+[1mEpoch: [0][110/120][0m	Time 0.458 (0.516)	hybrid_memory 1.624 (1.931)	kd_loss 0.000 (0.000)	MMD_loss 0.335 (0.305)
+
+************************* Start updating pseudo labels on epoch 1 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.1043059825897217
+[[5.9604645e-08 2.7397132e-01 5.8214152e-01 ... 9.9231189e-01
+  9.9728686e-01 9.9728686e-01]
+ [2.7397132e-01 2.3841858e-07 4.4828141e-01 ... 9.9231189e-01
+  9.9728686e-01 9.9728686e-01]
+ [5.8214152e-01 4.4828141e-01 0.0000000e+00 ... 9.9003977e-01
+  9.9503714e-01 9.9503714e-01]
+ ...
+ [9.9231189e-01 9.9231189e-01 9.9003977e-01 ... 0.0000000e+00
+  2.7418578e-01 2.6482534e-01]
+ [9.9728686e-01 9.9728686e-01 9.9503714e-01 ... 2.7418578e-01
+  5.9604645e-08 2.8571421e-01]
+ [9.9728686e-01 9.9728686e-01 9.9503714e-01 ... 2.6482534e-01
+  2.8571421e-01 5.9604645e-08]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 1: 69 clusters, 487 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    556 |     1413 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [1][  0/120][0m	Time 0.639 (0.639)	hybrid_memory 1.307 (1.307)	kd_loss 0.000 (0.000)	MMD_loss 0.321 (0.321)
+[1mEpoch: [1][ 10/120][0m	Time 0.459 (0.489)	hybrid_memory 2.091 (1.792)	kd_loss 0.000 (0.000)	MMD_loss 0.329 (0.312)
+[1mEpoch: [1][ 20/120][0m	Time 0.456 (0.478)	hybrid_memory 1.568 (1.767)	kd_loss 0.000 (0.000)	MMD_loss 0.299 (0.310)
+[1mEpoch: [1][ 30/120][0m	Time 0.480 (0.501)	hybrid_memory 2.070 (1.827)	kd_loss 0.000 (0.000)	MMD_loss 0.278 (0.305)
+[1mEpoch: [1][ 40/120][0m	Time 0.474 (0.494)	hybrid_memory 2.776 (1.905)	kd_loss 0.000 (0.000)	MMD_loss 0.261 (0.306)
+[1mEpoch: [1][ 50/120][0m	Time 0.463 (0.505)	hybrid_memory 1.276 (1.894)	kd_loss 0.000 (0.000)	MMD_loss 0.309 (0.304)
+[1mEpoch: [1][ 60/120][0m	Time 0.477 (0.499)	hybrid_memory 1.709 (1.837)	kd_loss 0.000 (0.000)	MMD_loss 0.337 (0.305)
+[1mEpoch: [1][ 70/120][0m	Time 0.860 (0.505)	hybrid_memory 2.268 (1.804)	kd_loss 0.000 (0.000)	MMD_loss 0.281 (0.304)
+[1mEpoch: [1][ 80/120][0m	Time 0.466 (0.505)	hybrid_memory 1.619 (1.785)	kd_loss 0.000 (0.000)	MMD_loss 0.302 (0.306)
+[1mEpoch: [1][ 90/120][0m	Time 0.461 (0.501)	hybrid_memory 1.462 (1.756)	kd_loss 0.000 (0.000)	MMD_loss 0.317 (0.307)
+[1mEpoch: [1][100/120][0m	Time 0.459 (0.502)	hybrid_memory 1.370 (1.751)	kd_loss 0.000 (0.000)	MMD_loss 0.330 (0.307)
+[1mEpoch: [1][110/120][0m	Time 0.463 (0.499)	hybrid_memory 1.908 (1.773)	kd_loss 0.000 (0.000)	MMD_loss 0.346 (0.307)
+
+************************* Start validating cuhk03-np on epoch 1 *************************n
+[1mVal: [ 0/22][0m	Time 0.274 (0.274)	Data 0.193 (0.193)
+[1mVal: [10/22][0m	Time 0.082 (0.082)	Data 0.033 (0.029)
+[1mVal: [20/22][0m	Time 0.099 (0.077)	Data 0.047 (0.026)
+
+
+Mean AP: 28.3%
+CMC Scores:
+  top-1          27.8%
+  top-5          49.6%
+  top-10         62.1%
+Validating time:  0:00:02.113837
+
+************************* Finished validating *************************
+
+val map : 0.28273308277130127
+in rank 0 val
+[92m
+ * Finished epoch   1  mAP: 28.3%  best: 28.3% *
+[0m
+start training task 1 out of 5 tasks
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 1
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+      1 |     1483 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8001 |   133628 |         5
+  ----------------------------
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 0
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    147 |     1413 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8147 |   133558 |         5
+  ----------------------------
+[1mExtract: [  0/120][0m	Time 0.296 (0.296)	Data 0.198 (0.198)
+[1mExtract: [ 10/120][0m	Time 0.093 (0.115)	Data 0.000 (0.018)
+[1mExtract: [ 20/120][0m	Time 0.094 (0.105)	Data 0.000 (0.010)
+[1mExtract: [ 30/120][0m	Time 0.094 (0.101)	Data 0.000 (0.007)
+[1mExtract: [ 40/120][0m	Time 0.094 (0.099)	Data 0.000 (0.005)
+[1mExtract: [ 50/120][0m	Time 0.092 (0.098)	Data 0.000 (0.004)
+[1mExtract: [ 60/120][0m	Time 0.094 (0.097)	Data 0.000 (0.003)
+[1mExtract: [ 70/120][0m	Time 0.093 (0.097)	Data 0.000 (0.003)
+[1mExtract: [ 80/120][0m	Time 0.093 (0.096)	Data 0.000 (0.003)
+[1mExtract: [ 90/120][0m	Time 0.093 (0.096)	Data 0.000 (0.002)
+[1mExtract: [100/120][0m	Time 0.094 (0.097)	Data 0.000 (0.002)
+[1mExtract: [110/120][0m	Time 0.091 (0.096)	Data 0.000 (0.002)
+done images / similarities
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+1
+Loading randperson dataset
+enter filtration similarities for randperson
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+=> Loaded checkpoint './data/OpenUnReID/pretrained/source_pretrain_randperson/model_best.pth'
+num memory : 9483
+num_features : 2048
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 1
+Loading randperson dataset
+[1mExtract: [ 0/24][0m	Time 0.379 (0.379)	Data 0.301 (0.301)
+[1mExtract: [10/24][0m	Time 0.160 (0.131)	Data 0.108 (0.077)
+[1mExtract: [20/24][0m	Time 0.149 (0.126)	Data 0.098 (0.075)
+[1mExtract: [   0/2065][0m	Time 0.242 (0.242)	Data 0.190 (0.190)
+[1mExtract: [  10/2065][0m	Time 0.106 (0.088)	Data 0.058 (0.039)
+[1mExtract: [  20/2065][0m	Time 0.089 (0.082)	Data 0.038 (0.033)
+[1mExtract: [  30/2065][0m	Time 0.096 (0.079)	Data 0.043 (0.030)
+[1mExtract: [  40/2065][0m	Time 0.091 (0.078)	Data 0.037 (0.028)
+[1mExtract: [  50/2065][0m	Time 0.102 (0.077)	Data 0.048 (0.028)
+[1mExtract: [  60/2065][0m	Time 0.123 (0.077)	Data 0.072 (0.027)
+[1mExtract: [  70/2065][0m	Time 0.114 (0.077)	Data 0.061 (0.027)
+[1mExtract: [  80/2065][0m	Time 0.087 (0.077)	Data 0.036 (0.027)
+[1mExtract: [  90/2065][0m	Time 0.122 (0.077)	Data 0.066 (0.027)
+[1mExtract: [ 100/2065][0m	Time 0.109 (0.076)	Data 0.058 (0.026)
+[1mExtract: [ 110/2065][0m	Time 0.105 (0.076)	Data 0.055 (0.026)
+[1mExtract: [ 120/2065][0m	Time 0.118 (0.077)	Data 0.063 (0.027)
+[1mExtract: [ 130/2065][0m	Time 0.114 (0.077)	Data 0.062 (0.027)
+[1mExtract: [ 140/2065][0m	Time 0.101 (0.077)	Data 0.048 (0.027)
+[1mExtract: [ 150/2065][0m	Time 0.116 (0.077)	Data 0.064 (0.027)
+[1mExtract: [ 160/2065][0m	Time 0.101 (0.077)	Data 0.049 (0.027)
+[1mExtract: [ 170/2065][0m	Time 0.096 (0.077)	Data 0.044 (0.027)
+[1mExtract: [ 180/2065][0m	Time 0.098 (0.077)	Data 0.046 (0.027)
+[1mExtract: [ 190/2065][0m	Time 0.114 (0.077)	Data 0.062 (0.026)
+[1mExtract: [ 200/2065][0m	Time 0.093 (0.076)	Data 0.041 (0.026)
+[1mExtract: [ 210/2065][0m	Time 0.101 (0.076)	Data 0.050 (0.026)
+[1mExtract: [ 220/2065][0m	Time 0.112 (0.076)	Data 0.061 (0.026)
+[1mExtract: [ 230/2065][0m	Time 0.135 (0.077)	Data 0.081 (0.027)
+[1mExtract: [ 240/2065][0m	Time 0.119 (0.077)	Data 0.068 (0.027)
+[1mExtract: [ 250/2065][0m	Time 0.186 (0.078)	Data 0.135 (0.028)
+[1mExtract: [ 260/2065][0m	Time 0.123 (0.078)	Data 0.071 (0.028)
+[1mExtract: [ 270/2065][0m	Time 0.097 (0.077)	Data 0.046 (0.027)
+[1mExtract: [ 280/2065][0m	Time 0.083 (0.077)	Data 0.034 (0.027)
+[1mExtract: [ 290/2065][0m	Time 0.103 (0.077)	Data 0.053 (0.027)
+[1mExtract: [ 300/2065][0m	Time 0.109 (0.077)	Data 0.056 (0.027)
+[1mExtract: [ 310/2065][0m	Time 0.144 (0.078)	Data 0.092 (0.028)
+[1mExtract: [ 320/2065][0m	Time 0.122 (0.078)	Data 0.070 (0.028)
+[1mExtract: [ 330/2065][0m	Time 0.114 (0.078)	Data 0.062 (0.028)
+[1mExtract: [ 340/2065][0m	Time 0.123 (0.078)	Data 0.073 (0.029)
+[1mExtract: [ 350/2065][0m	Time 0.125 (0.078)	Data 0.073 (0.029)
+[1mExtract: [ 360/2065][0m	Time 0.116 (0.079)	Data 0.065 (0.029)
+[1mExtract: [ 370/2065][0m	Time 0.096 (0.079)	Data 0.044 (0.028)
+[1mExtract: [ 380/2065][0m	Time 0.105 (0.079)	Data 0.053 (0.029)
+[1mExtract: [ 390/2065][0m	Time 0.136 (0.079)	Data 0.081 (0.029)
+[1mExtract: [ 400/2065][0m	Time 0.094 (0.079)	Data 0.042 (0.029)
+[1mExtract: [ 410/2065][0m	Time 0.113 (0.079)	Data 0.061 (0.029)
+[1mExtract: [ 420/2065][0m	Time 0.113 (0.079)	Data 0.061 (0.028)
+[1mExtract: [ 430/2065][0m	Time 0.120 (0.079)	Data 0.069 (0.028)
+[1mExtract: [ 440/2065][0m	Time 0.097 (0.079)	Data 0.046 (0.029)
+[1mExtract: [ 450/2065][0m	Time 0.109 (0.079)	Data 0.057 (0.029)
+[1mExtract: [ 460/2065][0m	Time 0.095 (0.079)	Data 0.043 (0.028)
+[1mExtract: [ 470/2065][0m	Time 0.113 (0.079)	Data 0.061 (0.028)
+[1mExtract: [ 480/2065][0m	Time 0.102 (0.079)	Data 0.049 (0.028)
+[1mExtract: [ 490/2065][0m	Time 0.097 (0.079)	Data 0.045 (0.028)
+[1mExtract: [ 500/2065][0m	Time 0.095 (0.078)	Data 0.042 (0.028)
+[1mExtract: [ 510/2065][0m	Time 0.102 (0.078)	Data 0.050 (0.028)
+[1mExtract: [ 520/2065][0m	Time 0.102 (0.078)	Data 0.050 (0.028)
+[1mExtract: [ 530/2065][0m	Time 0.098 (0.078)	Data 0.047 (0.028)
+[1mExtract: [ 540/2065][0m	Time 0.095 (0.078)	Data 0.043 (0.028)
+[1mExtract: [ 550/2065][0m	Time 0.095 (0.078)	Data 0.042 (0.028)
+[1mExtract: [ 560/2065][0m	Time 0.092 (0.078)	Data 0.042 (0.028)
+[1mExtract: [ 570/2065][0m	Time 0.113 (0.078)	Data 0.062 (0.028)
+[1mExtract: [ 580/2065][0m	Time 0.089 (0.078)	Data 0.037 (0.028)
+[1mExtract: [ 590/2065][0m	Time 0.086 (0.078)	Data 0.034 (0.027)
+[1mExtract: [ 600/2065][0m	Time 0.081 (0.077)	Data 0.027 (0.027)
+[1mExtract: [ 610/2065][0m	Time 0.059 (0.077)	Data 0.011 (0.027)
+[1mExtract: [ 620/2065][0m	Time 0.059 (0.077)	Data 0.010 (0.027)
+[1mExtract: [ 630/2065][0m	Time 0.070 (0.077)	Data 0.021 (0.027)
+[1mExtract: [ 640/2065][0m	Time 0.058 (0.077)	Data 0.009 (0.027)
+[1mExtract: [ 650/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [ 660/2065][0m	Time 0.063 (0.077)	Data 0.014 (0.027)
+[1mExtract: [ 670/2065][0m	Time 0.060 (0.077)	Data 0.011 (0.027)
+[1mExtract: [ 680/2065][0m	Time 0.056 (0.077)	Data 0.008 (0.027)
+[1mExtract: [ 690/2065][0m	Time 0.059 (0.077)	Data 0.011 (0.027)
+[1mExtract: [ 700/2065][0m	Time 0.110 (0.077)	Data 0.058 (0.027)
+[1mExtract: [ 710/2065][0m	Time 0.107 (0.077)	Data 0.055 (0.027)
+[1mExtract: [ 720/2065][0m	Time 0.109 (0.077)	Data 0.058 (0.027)
+[1mExtract: [ 730/2065][0m	Time 0.110 (0.077)	Data 0.058 (0.027)
+[1mExtract: [ 740/2065][0m	Time 0.099 (0.077)	Data 0.047 (0.027)
+[1mExtract: [ 750/2065][0m	Time 0.103 (0.077)	Data 0.050 (0.027)
+[1mExtract: [ 760/2065][0m	Time 0.088 (0.077)	Data 0.035 (0.027)
+[1mExtract: [ 770/2065][0m	Time 0.095 (0.077)	Data 0.043 (0.027)
+[1mExtract: [ 780/2065][0m	Time 0.100 (0.077)	Data 0.048 (0.027)
+[1mExtract: [ 790/2065][0m	Time 0.101 (0.077)	Data 0.048 (0.027)
+[1mExtract: [ 800/2065][0m	Time 0.093 (0.077)	Data 0.041 (0.027)
+[1mExtract: [ 810/2065][0m	Time 0.092 (0.077)	Data 0.040 (0.027)
+[1mExtract: [ 820/2065][0m	Time 0.101 (0.077)	Data 0.049 (0.027)
+[1mExtract: [ 830/2065][0m	Time 0.099 (0.077)	Data 0.047 (0.027)
+[1mExtract: [ 840/2065][0m	Time 0.142 (0.077)	Data 0.090 (0.027)
+[1mExtract: [ 850/2065][0m	Time 0.099 (0.077)	Data 0.044 (0.026)
+[1mExtract: [ 860/2065][0m	Time 0.089 (0.077)	Data 0.035 (0.026)
+[1mExtract: [ 870/2065][0m	Time 0.104 (0.077)	Data 0.056 (0.026)
+[1mExtract: [ 880/2065][0m	Time 0.099 (0.077)	Data 0.049 (0.026)
+[1mExtract: [ 890/2065][0m	Time 0.115 (0.076)	Data 0.062 (0.026)
+[1mExtract: [ 900/2065][0m	Time 0.096 (0.076)	Data 0.044 (0.026)
+[1mExtract: [ 910/2065][0m	Time 0.103 (0.076)	Data 0.051 (0.026)
+[1mExtract: [ 920/2065][0m	Time 0.086 (0.076)	Data 0.034 (0.026)
+[1mExtract: [ 930/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 940/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 950/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 960/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 970/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 980/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 990/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1000/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1010/2065][0m	Time 0.071 (0.076)	Data 0.023 (0.026)
+[1mExtract: [1020/2065][0m	Time 0.069 (0.076)	Data 0.020 (0.026)
+[1mExtract: [1030/2065][0m	Time 0.051 (0.076)	Data 0.004 (0.026)
+[1mExtract: [1040/2065][0m	Time 0.065 (0.076)	Data 0.017 (0.026)
+[1mExtract: [1050/2065][0m	Time 0.053 (0.076)	Data 0.005 (0.026)
+[1mExtract: [1060/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1070/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1080/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1090/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1100/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1110/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1120/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1130/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1140/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1150/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1160/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1170/2065][0m	Time 0.052 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1180/2065][0m	Time 0.052 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1190/2065][0m	Time 0.053 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1200/2065][0m	Time 0.099 (0.076)	Data 0.047 (0.026)
+[1mExtract: [1210/2065][0m	Time 0.107 (0.076)	Data 0.054 (0.026)
+[1mExtract: [1220/2065][0m	Time 0.076 (0.076)	Data 0.025 (0.026)
+[1mExtract: [1230/2065][0m	Time 0.070 (0.076)	Data 0.021 (0.026)
+[1mExtract: [1240/2065][0m	Time 0.067 (0.076)	Data 0.017 (0.026)
+[1mExtract: [1250/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1260/2065][0m	Time 0.050 (0.076)	Data 0.001 (0.026)
+[1mExtract: [1270/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1280/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1290/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1300/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1310/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1320/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1330/2065][0m	Time 0.049 (0.076)	Data 0.001 (0.026)
+[1mExtract: [1340/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1350/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1360/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1370/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.026)
+[1mExtract: [1380/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1390/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1400/2065][0m	Time 0.047 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1410/2065][0m	Time 0.047 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1420/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1430/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1440/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1450/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1460/2065][0m	Time 0.047 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1470/2065][0m	Time 0.047 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1480/2065][0m	Time 0.047 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1490/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1500/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1510/2065][0m	Time 0.047 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1520/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1530/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1540/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1550/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1560/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1570/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1580/2065][0m	Time 0.047 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1590/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1600/2065][0m	Time 0.047 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1610/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1620/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1630/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1640/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1650/2065][0m	Time 0.053 (0.076)	Data 0.005 (0.026)
+[1mExtract: [1660/2065][0m	Time 0.058 (0.076)	Data 0.009 (0.026)
+[1mExtract: [1670/2065][0m	Time 0.098 (0.076)	Data 0.047 (0.026)
+[1mExtract: [1680/2065][0m	Time 0.117 (0.076)	Data 0.066 (0.026)
+[1mExtract: [1690/2065][0m	Time 0.106 (0.076)	Data 0.057 (0.027)
+[1mExtract: [1700/2065][0m	Time 0.109 (0.076)	Data 0.060 (0.027)
+[1mExtract: [1710/2065][0m	Time 0.115 (0.076)	Data 0.066 (0.027)
+[1mExtract: [1720/2065][0m	Time 0.114 (0.076)	Data 0.062 (0.027)
+[1mExtract: [1730/2065][0m	Time 0.130 (0.077)	Data 0.077 (0.027)
+[1mExtract: [1740/2065][0m	Time 0.109 (0.077)	Data 0.057 (0.027)
+[1mExtract: [1750/2065][0m	Time 0.104 (0.077)	Data 0.052 (0.027)
+[1mExtract: [1760/2065][0m	Time 0.092 (0.077)	Data 0.036 (0.027)
+[1mExtract: [1770/2065][0m	Time 0.055 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1780/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1790/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1800/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1810/2065][0m	Time 0.051 (0.076)	Data 0.003 (0.027)
+[1mExtract: [1820/2065][0m	Time 0.090 (0.077)	Data 0.039 (0.027)
+[1mExtract: [1830/2065][0m	Time 0.052 (0.076)	Data 0.004 (0.027)
+[1mExtract: [1840/2065][0m	Time 0.070 (0.076)	Data 0.020 (0.027)
+[1mExtract: [1850/2065][0m	Time 0.056 (0.076)	Data 0.008 (0.027)
+[1mExtract: [1860/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1870/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.027)
+[1mExtract: [1880/2065][0m	Time 0.057 (0.076)	Data 0.009 (0.027)
+[1mExtract: [1890/2065][0m	Time 0.061 (0.077)	Data 0.012 (0.027)
+[1mExtract: [1900/2065][0m	Time 0.087 (0.077)	Data 0.035 (0.027)
+[1mExtract: [1910/2065][0m	Time 0.086 (0.077)	Data 0.035 (0.027)
+[1mExtract: [1920/2065][0m	Time 0.087 (0.077)	Data 0.035 (0.027)
+[1mExtract: [1930/2065][0m	Time 0.070 (0.077)	Data 0.020 (0.027)
+[1mExtract: [1940/2065][0m	Time 0.056 (0.077)	Data 0.007 (0.027)
+[1mExtract: [1950/2065][0m	Time 0.075 (0.077)	Data 0.025 (0.027)
+[1mExtract: [1960/2065][0m	Time 0.086 (0.077)	Data 0.034 (0.027)
+[1mExtract: [1970/2065][0m	Time 0.047 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1980/2065][0m	Time 0.052 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1990/2065][0m	Time 0.052 (0.077)	Data 0.000 (0.027)
+[1mExtract: [2000/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [2010/2065][0m	Time 0.049 (0.077)	Data 0.000 (0.027)
+[1mExtract: [2020/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [2030/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [2040/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [2050/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [2060/2065][0m	Time 0.051 (0.077)	Data 0.004 (0.027)
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 1
+appel build valdataloader
+[1m=> Loaded val from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    153 |     1376 |         2
+  ----------------------------
+=> Loaded checkpoint 'logs/SpCL_test_4/model_best.pth'
+
+******************************* Start testing cuhk03-np *******************************
+
+[1mTest: [  0/106][0m	Time 0.298 (0.298)	Data 0.242 (0.242)
+[1mTest: [ 10/106][0m	Time 0.125 (0.099)	Data 0.073 (0.048)
+[1mTest: [ 20/106][0m	Time 0.102 (0.091)	Data 0.049 (0.040)
+[1mTest: [ 30/106][0m	Time 0.080 (0.085)	Data 0.029 (0.034)
+[1mTest: [ 40/106][0m	Time 0.094 (0.083)	Data 0.045 (0.032)
+[1mTest: [ 50/106][0m	Time 0.110 (0.082)	Data 0.057 (0.031)
+[1mTest: [ 60/106][0m	Time 0.102 (0.080)	Data 0.054 (0.030)
+[1mTest: [ 70/106][0m	Time 0.073 (0.079)	Data 0.025 (0.029)
+[1mTest: [ 80/106][0m	Time 0.068 (0.078)	Data 0.019 (0.029)
+[1mTest: [ 90/106][0m	Time 0.119 (0.079)	Data 0.070 (0.029)
+[1mTest: [100/106][0m	Time 0.101 (0.080)	Data 0.050 (0.030)
+
+
+Mean AP: 14.3%
+CMC Scores:
+  top-1          14.3%
+  top-5          26.4%
+  top-10         35.9%
+Testing time:  0:00:09.358423
+
+******************************* Finished testing *******************************
+
+
+************************* Start updating pseudo labels on epoch 2 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.13631534576416
+[[0.         0.07155162 0.11210024 ... 0.9978245  0.9978245  0.99050194]
+ [0.07155162 0.         0.10187924 ... 0.9978245  0.9978245  0.99378157]
+ [0.11210024 0.10187924 0.         ... 0.9978245  0.9964989  0.99378157]
+ ...
+ [0.9978245  0.9978245  0.9978245  ... 0.         0.28571433 0.4438241 ]
+ [0.9978245  0.9978245  0.9964989  ... 0.28571433 0.         0.45747602]
+ [0.99050194 0.99378157 0.99378157 ... 0.4438241  0.45747602 0.        ]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 2: 105 clusters, 373 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    478 |     1483 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [2][  0/120][0m	Time 0.779 (0.779)	hybrid_memory 2.167 (2.167)	kd_loss 3.308 (3.308)	MMD_loss 0.349 (0.349)
+[1mEpoch: [2][ 10/120][0m	Time 0.567 (0.588)	hybrid_memory 2.686 (2.070)	kd_loss 3.156 (3.461)	MMD_loss 0.332 (0.339)
+[1mEpoch: [2][ 20/120][0m	Time 0.564 (0.591)	hybrid_memory 2.475 (2.210)	kd_loss 3.104 (3.523)	MMD_loss 0.333 (0.338)
+[1mEpoch: [2][ 30/120][0m	Time 0.573 (0.598)	hybrid_memory 1.335 (2.096)	kd_loss 2.873 (3.472)	MMD_loss 0.358 (0.340)
+[1mEpoch: [2][ 40/120][0m	Time 0.572 (0.591)	hybrid_memory 1.910 (2.039)	kd_loss 3.357 (3.445)	MMD_loss 0.325 (0.338)
+[1mEpoch: [2][ 50/120][0m	Time 0.973 (0.602)	hybrid_memory 1.195 (2.000)	kd_loss 3.317 (3.414)	MMD_loss 0.320 (0.336)
+[1mEpoch: [2][ 60/120][0m	Time 0.571 (0.596)	hybrid_memory 2.775 (1.984)	kd_loss 2.841 (3.350)	MMD_loss 0.336 (0.339)
+[1mEpoch: [2][ 70/120][0m	Time 0.558 (0.592)	hybrid_memory 2.044 (1.965)	kd_loss 3.506 (3.316)	MMD_loss 0.328 (0.339)
+[1mEpoch: [2][ 80/120][0m	Time 0.563 (0.598)	hybrid_memory 1.431 (1.914)	kd_loss 3.092 (3.292)	MMD_loss 0.329 (0.340)
+[1mEpoch: [2][ 90/120][0m	Time 0.565 (0.594)	hybrid_memory 1.521 (1.857)	kd_loss 3.142 (3.287)	MMD_loss 0.355 (0.341)
+[1mEpoch: [2][100/120][0m	Time 0.984 (0.600)	hybrid_memory 1.204 (1.835)	kd_loss 2.867 (3.258)	MMD_loss 0.344 (0.341)
+[1mEpoch: [2][110/120][0m	Time 0.578 (0.597)	hybrid_memory 1.510 (1.799)	kd_loss 2.522 (3.220)	MMD_loss 0.361 (0.343)
+
+************************* Start updating pseudo labels on epoch 3 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.2318785190582275
+[[0.0000000e+00 4.4436872e-01 4.4075602e-01 ... 9.9008608e-01
+  9.8255199e-01 9.9008608e-01]
+ [4.4436872e-01 0.0000000e+00 8.2458377e-02 ... 9.9736220e-01
+  1.0000000e+00 9.9736220e-01]
+ [4.4075602e-01 8.2458377e-02 0.0000000e+00 ... 9.9736220e-01
+  1.0000000e+00 9.9736220e-01]
+ ...
+ [9.9008608e-01 9.9736220e-01 9.9736220e-01 ... 7.1525574e-07
+  4.8129058e-01 7.1525574e-07]
+ [9.8255199e-01 1.0000000e+00 1.0000000e+00 ... 4.8129058e-01
+  5.9604645e-08 4.8129058e-01]
+ [9.9008608e-01 9.9736220e-01 9.9736220e-01 ... 7.1525574e-07
+  4.8129058e-01 7.1525574e-07]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 3: 80 clusters, 424 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    504 |     1483 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [3][  0/120][0m	Time 0.597 (0.597)	hybrid_memory 1.818 (1.818)	kd_loss 2.781 (2.781)	MMD_loss 0.326 (0.326)
+[1mEpoch: [3][ 10/120][0m	Time 0.563 (0.573)	hybrid_memory 1.583 (1.769)	kd_loss 3.594 (2.993)	MMD_loss 0.381 (0.337)
+[1mEpoch: [3][ 20/120][0m	Time 0.558 (0.568)	hybrid_memory 2.071 (1.720)	kd_loss 3.206 (3.105)	MMD_loss 0.373 (0.348)
+[1mEpoch: [3][ 30/120][0m	Time 0.565 (0.594)	hybrid_memory 1.103 (1.736)	kd_loss 2.862 (3.028)	MMD_loss 0.316 (0.345)
+[1mEpoch: [3][ 40/120][0m	Time 0.575 (0.587)	hybrid_memory 1.129 (1.740)	kd_loss 2.599 (2.996)	MMD_loss 0.345 (0.345)
+[1mEpoch: [3][ 50/120][0m	Time 0.564 (0.592)	hybrid_memory 1.146 (1.782)	kd_loss 2.556 (3.027)	MMD_loss 0.336 (0.347)
+[1mEpoch: [3][ 60/120][0m	Time 0.570 (0.587)	hybrid_memory 1.986 (1.737)	kd_loss 2.831 (3.000)	MMD_loss 0.342 (0.347)
+[1mEpoch: [3][ 70/120][0m	Time 0.567 (0.596)	hybrid_memory 3.107 (1.758)	kd_loss 2.242 (3.025)	MMD_loss 0.316 (0.347)
+[1mEpoch: [3][ 80/120][0m	Time 0.564 (0.592)	hybrid_memory 2.523 (1.751)	kd_loss 3.833 (3.028)	MMD_loss 0.338 (0.347)
+[1mEpoch: [3][ 90/120][0m	Time 0.559 (0.594)	hybrid_memory 1.211 (1.727)	kd_loss 3.119 (3.045)	MMD_loss 0.375 (0.347)
+[1mEpoch: [3][100/120][0m	Time 0.559 (0.595)	hybrid_memory 1.752 (1.717)	kd_loss 2.503 (3.027)	MMD_loss 0.368 (0.348)
+[1mEpoch: [3][110/120][0m	Time 0.561 (0.592)	hybrid_memory 1.384 (1.706)	kd_loss 2.563 (3.018)	MMD_loss 0.342 (0.348)
+
+************************* Start validating cuhk03-np on epoch 3 *************************n
+[1mVal: [ 0/22][0m	Time 0.292 (0.292)	Data 0.211 (0.211)
+[1mVal: [10/22][0m	Time 0.050 (0.086)	Data 0.000 (0.032)
+[1mVal: [20/22][0m	Time 0.074 (0.078)	Data 0.024 (0.026)
+
+
+Mean AP: 30.8%
+CMC Scores:
+  top-1          30.1%
+  top-5          53.2%
+  top-10         64.8%
+Validating time:  0:00:02.158181
+
+************************* Finished validating *************************
+
+val map : 0.3080460727214813
+in rank 0 val
+[92m
+ * Finished epoch   3  mAP: 30.8%  best: 30.8% *
+[0m
+start training task 2 out of 5 tasks
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 2
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+      1 |     1459 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8001 |   133604 |         5
+  ----------------------------
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 1
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    155 |     1483 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8155 |   133628 |         5
+  ----------------------------
+[1mExtract: [  0/120][0m	Time 0.312 (0.312)	Data 0.202 (0.202)
+[1mExtract: [ 10/120][0m	Time 0.093 (0.117)	Data 0.000 (0.019)
+[1mExtract: [ 20/120][0m	Time 0.095 (0.106)	Data 0.000 (0.010)
+[1mExtract: [ 30/120][0m	Time 0.094 (0.102)	Data 0.000 (0.007)
+[1mExtract: [ 40/120][0m	Time 0.093 (0.100)	Data 0.000 (0.005)
+[1mExtract: [ 50/120][0m	Time 0.094 (0.099)	Data 0.000 (0.004)
+[1mExtract: [ 60/120][0m	Time 0.094 (0.098)	Data 0.000 (0.004)
+[1mExtract: [ 70/120][0m	Time 0.095 (0.097)	Data 0.000 (0.003)
+[1mExtract: [ 80/120][0m	Time 0.093 (0.097)	Data 0.000 (0.003)
+[1mExtract: [ 90/120][0m	Time 0.093 (0.097)	Data 0.000 (0.002)
+[1mExtract: [100/120][0m	Time 0.095 (0.096)	Data 0.000 (0.002)
+[1mExtract: [110/120][0m	Time 0.096 (0.096)	Data 0.000 (0.002)
+done images / similarities
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+1
+Loading randperson dataset
+enter filtration similarities for randperson
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+=> Loaded checkpoint './data/OpenUnReID/pretrained/source_pretrain_randperson/model_best.pth'
+num memory : 9459
+num_features : 2048
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 2
+Loading randperson dataset
+[1mExtract: [ 0/23][0m	Time 0.305 (0.305)	Data 0.229 (0.229)
+[1mExtract: [10/23][0m	Time 0.109 (0.125)	Data 0.060 (0.073)
+[1mExtract: [20/23][0m	Time 0.152 (0.162)	Data 0.097 (0.109)
+[1mExtract: [   0/2065][0m	Time 0.267 (0.267)	Data 0.204 (0.204)
+[1mExtract: [  10/2065][0m	Time 0.067 (0.092)	Data 0.014 (0.036)
+[1mExtract: [  20/2065][0m	Time 0.056 (0.083)	Data 0.006 (0.030)
+[1mExtract: [  30/2065][0m	Time 0.076 (0.080)	Data 0.025 (0.027)
+[1mExtract: [  40/2065][0m	Time 0.081 (0.078)	Data 0.030 (0.026)
+[1mExtract: [  50/2065][0m	Time 0.048 (0.078)	Data 0.000 (0.025)
+[1mExtract: [  60/2065][0m	Time 0.063 (0.077)	Data 0.015 (0.025)
+[1mExtract: [  70/2065][0m	Time 0.049 (0.078)	Data 0.001 (0.026)
+[1mExtract: [  80/2065][0m	Time 0.048 (0.078)	Data 0.000 (0.026)
+[1mExtract: [  90/2065][0m	Time 0.075 (0.078)	Data 0.025 (0.026)
+[1mExtract: [ 100/2065][0m	Time 0.167 (0.078)	Data 0.115 (0.027)
+[1mExtract: [ 110/2065][0m	Time 0.093 (0.078)	Data 0.039 (0.027)
+[1mExtract: [ 120/2065][0m	Time 0.092 (0.078)	Data 0.040 (0.026)
+[1mExtract: [ 130/2065][0m	Time 0.068 (0.077)	Data 0.018 (0.026)
+[1mExtract: [ 140/2065][0m	Time 0.099 (0.077)	Data 0.046 (0.026)
+[1mExtract: [ 150/2065][0m	Time 0.088 (0.077)	Data 0.034 (0.026)
+[1mExtract: [ 160/2065][0m	Time 0.102 (0.077)	Data 0.047 (0.026)
+[1mExtract: [ 170/2065][0m	Time 0.098 (0.077)	Data 0.048 (0.025)
+[1mExtract: [ 180/2065][0m	Time 0.092 (0.077)	Data 0.043 (0.025)
+[1mExtract: [ 190/2065][0m	Time 0.097 (0.077)	Data 0.044 (0.026)
+[1mExtract: [ 200/2065][0m	Time 0.112 (0.077)	Data 0.061 (0.026)
+[1mExtract: [ 210/2065][0m	Time 0.105 (0.077)	Data 0.053 (0.026)
+[1mExtract: [ 220/2065][0m	Time 0.106 (0.077)	Data 0.056 (0.026)
+[1mExtract: [ 230/2065][0m	Time 0.100 (0.077)	Data 0.051 (0.026)
+[1mExtract: [ 240/2065][0m	Time 0.090 (0.077)	Data 0.038 (0.026)
+[1mExtract: [ 250/2065][0m	Time 0.127 (0.077)	Data 0.077 (0.026)
+[1mExtract: [ 260/2065][0m	Time 0.104 (0.077)	Data 0.055 (0.026)
+[1mExtract: [ 270/2065][0m	Time 0.128 (0.077)	Data 0.074 (0.026)
+[1mExtract: [ 280/2065][0m	Time 0.107 (0.077)	Data 0.054 (0.026)
+[1mExtract: [ 290/2065][0m	Time 0.099 (0.077)	Data 0.047 (0.026)
+[1mExtract: [ 300/2065][0m	Time 0.110 (0.077)	Data 0.058 (0.026)
+[1mExtract: [ 310/2065][0m	Time 0.086 (0.077)	Data 0.034 (0.026)
+[1mExtract: [ 320/2065][0m	Time 0.114 (0.077)	Data 0.062 (0.026)
+[1mExtract: [ 330/2065][0m	Time 0.116 (0.077)	Data 0.063 (0.026)
+[1mExtract: [ 340/2065][0m	Time 0.103 (0.077)	Data 0.050 (0.026)
+[1mExtract: [ 350/2065][0m	Time 0.101 (0.077)	Data 0.048 (0.026)
+[1mExtract: [ 360/2065][0m	Time 0.053 (0.077)	Data 0.000 (0.026)
+[1mExtract: [ 370/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [ 380/2065][0m	Time 0.048 (0.078)	Data 0.000 (0.027)
+[1mExtract: [ 390/2065][0m	Time 0.048 (0.078)	Data 0.000 (0.027)
+[1mExtract: [ 400/2065][0m	Time 0.132 (0.078)	Data 0.083 (0.028)
+[1mExtract: [ 410/2065][0m	Time 0.129 (0.078)	Data 0.080 (0.028)
+[1mExtract: [ 420/2065][0m	Time 0.166 (0.079)	Data 0.116 (0.028)
+[1mExtract: [ 430/2065][0m	Time 0.134 (0.079)	Data 0.083 (0.029)
+[1mExtract: [ 440/2065][0m	Time 0.098 (0.079)	Data 0.048 (0.029)
+[1mExtract: [ 450/2065][0m	Time 0.093 (0.079)	Data 0.045 (0.029)
+[1mExtract: [ 460/2065][0m	Time 0.125 (0.080)	Data 0.075 (0.029)
+[1mExtract: [ 470/2065][0m	Time 0.112 (0.080)	Data 0.062 (0.030)
+[1mExtract: [ 480/2065][0m	Time 0.067 (0.080)	Data 0.018 (0.030)
+[1mExtract: [ 490/2065][0m	Time 0.074 (0.080)	Data 0.025 (0.030)
+[1mExtract: [ 500/2065][0m	Time 0.099 (0.080)	Data 0.047 (0.030)
+[1mExtract: [ 510/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.030)
+[1mExtract: [ 520/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.030)
+[1mExtract: [ 530/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.030)
+[1mExtract: [ 540/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.030)
+[1mExtract: [ 550/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.030)
+[1mExtract: [ 560/2065][0m	Time 0.047 (0.080)	Data 0.000 (0.030)
+[1mExtract: [ 570/2065][0m	Time 0.060 (0.080)	Data 0.012 (0.031)
+[1mExtract: [ 580/2065][0m	Time 0.048 (0.081)	Data 0.000 (0.031)
+[1mExtract: [ 590/2065][0m	Time 0.047 (0.081)	Data 0.000 (0.031)
+[1mExtract: [ 600/2065][0m	Time 0.047 (0.081)	Data 0.000 (0.031)
+[1mExtract: [ 610/2065][0m	Time 0.056 (0.081)	Data 0.009 (0.031)
+[1mExtract: [ 620/2065][0m	Time 0.047 (0.081)	Data 0.000 (0.031)
+[1mExtract: [ 630/2065][0m	Time 0.055 (0.081)	Data 0.000 (0.031)
+[1mExtract: [ 640/2065][0m	Time 0.082 (0.081)	Data 0.030 (0.031)
+[1mExtract: [ 650/2065][0m	Time 0.120 (0.081)	Data 0.068 (0.031)
+[1mExtract: [ 660/2065][0m	Time 0.128 (0.081)	Data 0.076 (0.031)
+[1mExtract: [ 670/2065][0m	Time 0.131 (0.081)	Data 0.080 (0.031)
+[1mExtract: [ 680/2065][0m	Time 0.104 (0.081)	Data 0.052 (0.031)
+[1mExtract: [ 690/2065][0m	Time 0.122 (0.081)	Data 0.072 (0.031)
+[1mExtract: [ 700/2065][0m	Time 0.112 (0.081)	Data 0.059 (0.031)
+[1mExtract: [ 710/2065][0m	Time 0.113 (0.081)	Data 0.062 (0.031)
+[1mExtract: [ 720/2065][0m	Time 0.125 (0.081)	Data 0.072 (0.031)
+[1mExtract: [ 730/2065][0m	Time 0.139 (0.081)	Data 0.088 (0.031)
+[1mExtract: [ 740/2065][0m	Time 0.133 (0.081)	Data 0.081 (0.032)
+[1mExtract: [ 750/2065][0m	Time 0.131 (0.082)	Data 0.079 (0.032)
+[1mExtract: [ 760/2065][0m	Time 0.109 (0.082)	Data 0.057 (0.032)
+[1mExtract: [ 770/2065][0m	Time 0.120 (0.082)	Data 0.068 (0.032)
+[1mExtract: [ 780/2065][0m	Time 0.118 (0.082)	Data 0.067 (0.032)
+[1mExtract: [ 790/2065][0m	Time 0.116 (0.082)	Data 0.066 (0.032)
+[1mExtract: [ 800/2065][0m	Time 0.116 (0.082)	Data 0.062 (0.032)
+[1mExtract: [ 810/2065][0m	Time 0.129 (0.082)	Data 0.078 (0.032)
+[1mExtract: [ 820/2065][0m	Time 0.087 (0.082)	Data 0.036 (0.032)
+[1mExtract: [ 830/2065][0m	Time 0.086 (0.082)	Data 0.035 (0.032)
+[1mExtract: [ 840/2065][0m	Time 0.125 (0.082)	Data 0.077 (0.032)
+[1mExtract: [ 850/2065][0m	Time 0.121 (0.082)	Data 0.072 (0.032)
+[1mExtract: [ 860/2065][0m	Time 0.123 (0.082)	Data 0.072 (0.032)
+[1mExtract: [ 870/2065][0m	Time 0.097 (0.082)	Data 0.046 (0.032)
+[1mExtract: [ 880/2065][0m	Time 0.127 (0.082)	Data 0.075 (0.032)
+[1mExtract: [ 890/2065][0m	Time 0.119 (0.082)	Data 0.067 (0.032)
+[1mExtract: [ 900/2065][0m	Time 0.106 (0.082)	Data 0.055 (0.032)
+[1mExtract: [ 910/2065][0m	Time 0.128 (0.082)	Data 0.075 (0.032)
+[1mExtract: [ 920/2065][0m	Time 0.114 (0.082)	Data 0.063 (0.032)
+[1mExtract: [ 930/2065][0m	Time 0.102 (0.082)	Data 0.053 (0.032)
+[1mExtract: [ 940/2065][0m	Time 0.114 (0.082)	Data 0.062 (0.032)
+[1mExtract: [ 950/2065][0m	Time 0.120 (0.082)	Data 0.066 (0.032)
+[1mExtract: [ 960/2065][0m	Time 0.096 (0.082)	Data 0.046 (0.032)
+[1mExtract: [ 970/2065][0m	Time 0.113 (0.082)	Data 0.062 (0.032)
+[1mExtract: [ 980/2065][0m	Time 0.109 (0.082)	Data 0.059 (0.032)
+[1mExtract: [ 990/2065][0m	Time 0.123 (0.082)	Data 0.071 (0.032)
+[1mExtract: [1000/2065][0m	Time 0.201 (0.082)	Data 0.148 (0.033)
+[1mExtract: [1010/2065][0m	Time 0.162 (0.083)	Data 0.110 (0.033)
+[1mExtract: [1020/2065][0m	Time 0.158 (0.083)	Data 0.105 (0.033)
+[1mExtract: [1030/2065][0m	Time 0.201 (0.084)	Data 0.147 (0.034)
+[1mExtract: [1040/2065][0m	Time 0.110 (0.084)	Data 0.057 (0.034)
+[1mExtract: [1050/2065][0m	Time 0.118 (0.084)	Data 0.066 (0.034)
+[1mExtract: [1060/2065][0m	Time 0.122 (0.084)	Data 0.070 (0.034)
+[1mExtract: [1070/2065][0m	Time 0.107 (0.084)	Data 0.054 (0.034)
+[1mExtract: [1080/2065][0m	Time 0.112 (0.084)	Data 0.060 (0.034)
+[1mExtract: [1090/2065][0m	Time 0.145 (0.084)	Data 0.094 (0.034)
+[1mExtract: [1100/2065][0m	Time 0.115 (0.084)	Data 0.063 (0.034)
+[1mExtract: [1110/2065][0m	Time 0.114 (0.084)	Data 0.064 (0.034)
+[1mExtract: [1120/2065][0m	Time 0.175 (0.084)	Data 0.123 (0.034)
+[1mExtract: [1130/2065][0m	Time 0.128 (0.084)	Data 0.075 (0.034)
+[1mExtract: [1140/2065][0m	Time 0.134 (0.084)	Data 0.082 (0.034)
+[1mExtract: [1150/2065][0m	Time 0.125 (0.084)	Data 0.075 (0.034)
+[1mExtract: [1160/2065][0m	Time 0.117 (0.084)	Data 0.065 (0.035)
+[1mExtract: [1170/2065][0m	Time 0.107 (0.084)	Data 0.055 (0.034)
+[1mExtract: [1180/2065][0m	Time 0.120 (0.084)	Data 0.068 (0.034)
+[1mExtract: [1190/2065][0m	Time 0.117 (0.084)	Data 0.065 (0.034)
+[1mExtract: [1200/2065][0m	Time 0.119 (0.084)	Data 0.067 (0.034)
+[1mExtract: [1210/2065][0m	Time 0.124 (0.084)	Data 0.072 (0.034)
+[1mExtract: [1220/2065][0m	Time 0.096 (0.084)	Data 0.046 (0.034)
+[1mExtract: [1230/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1240/2065][0m	Time 0.060 (0.084)	Data 0.012 (0.034)
+[1mExtract: [1250/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1260/2065][0m	Time 0.049 (0.084)	Data 0.001 (0.034)
+[1mExtract: [1270/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1280/2065][0m	Time 0.076 (0.084)	Data 0.026 (0.034)
+[1mExtract: [1290/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1300/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1310/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1320/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1330/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1340/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1350/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1360/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1370/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1380/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1390/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1400/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1410/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1420/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.035)
+[1mExtract: [1430/2065][0m	Time 0.048 (0.085)	Data 0.000 (0.035)
+[1mExtract: [1440/2065][0m	Time 0.068 (0.085)	Data 0.019 (0.035)
+[1mExtract: [1450/2065][0m	Time 0.078 (0.085)	Data 0.029 (0.035)
+[1mExtract: [1460/2065][0m	Time 0.083 (0.085)	Data 0.032 (0.035)
+[1mExtract: [1470/2065][0m	Time 0.100 (0.085)	Data 0.047 (0.035)
+[1mExtract: [1480/2065][0m	Time 0.151 (0.085)	Data 0.100 (0.035)
+[1mExtract: [1490/2065][0m	Time 0.095 (0.085)	Data 0.043 (0.035)
+[1mExtract: [1500/2065][0m	Time 0.103 (0.084)	Data 0.051 (0.035)
+[1mExtract: [1510/2065][0m	Time 0.102 (0.084)	Data 0.049 (0.035)
+[1mExtract: [1520/2065][0m	Time 0.083 (0.084)	Data 0.032 (0.034)
+[1mExtract: [1530/2065][0m	Time 0.098 (0.084)	Data 0.045 (0.034)
+[1mExtract: [1540/2065][0m	Time 0.093 (0.084)	Data 0.044 (0.034)
+[1mExtract: [1550/2065][0m	Time 0.114 (0.084)	Data 0.063 (0.034)
+[1mExtract: [1560/2065][0m	Time 0.095 (0.084)	Data 0.045 (0.034)
+[1mExtract: [1570/2065][0m	Time 0.111 (0.084)	Data 0.062 (0.034)
+[1mExtract: [1580/2065][0m	Time 0.126 (0.084)	Data 0.075 (0.034)
+[1mExtract: [1590/2065][0m	Time 0.113 (0.084)	Data 0.061 (0.034)
+[1mExtract: [1600/2065][0m	Time 0.098 (0.084)	Data 0.045 (0.034)
+[1mExtract: [1610/2065][0m	Time 0.089 (0.084)	Data 0.037 (0.034)
+[1mExtract: [1620/2065][0m	Time 0.091 (0.084)	Data 0.039 (0.034)
+[1mExtract: [1630/2065][0m	Time 0.091 (0.084)	Data 0.043 (0.034)
+[1mExtract: [1640/2065][0m	Time 0.065 (0.084)	Data 0.016 (0.034)
+[1mExtract: [1650/2065][0m	Time 0.083 (0.084)	Data 0.031 (0.034)
+[1mExtract: [1660/2065][0m	Time 0.070 (0.084)	Data 0.020 (0.034)
+[1mExtract: [1670/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1680/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1690/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1700/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1710/2065][0m	Time 0.049 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1720/2065][0m	Time 0.053 (0.084)	Data 0.006 (0.034)
+[1mExtract: [1730/2065][0m	Time 0.063 (0.084)	Data 0.015 (0.034)
+[1mExtract: [1740/2065][0m	Time 0.047 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1750/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1760/2065][0m	Time 0.049 (0.084)	Data 0.001 (0.034)
+[1mExtract: [1770/2065][0m	Time 0.078 (0.084)	Data 0.027 (0.034)
+[1mExtract: [1780/2065][0m	Time 0.087 (0.084)	Data 0.036 (0.034)
+[1mExtract: [1790/2065][0m	Time 0.061 (0.084)	Data 0.012 (0.034)
+[1mExtract: [1800/2065][0m	Time 0.059 (0.084)	Data 0.010 (0.034)
+[1mExtract: [1810/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1820/2065][0m	Time 0.088 (0.084)	Data 0.039 (0.034)
+[1mExtract: [1830/2065][0m	Time 0.111 (0.084)	Data 0.061 (0.034)
+[1mExtract: [1840/2065][0m	Time 0.080 (0.084)	Data 0.029 (0.034)
+[1mExtract: [1850/2065][0m	Time 0.049 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1860/2065][0m	Time 0.048 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1870/2065][0m	Time 0.051 (0.084)	Data 0.003 (0.034)
+[1mExtract: [1880/2065][0m	Time 0.093 (0.084)	Data 0.039 (0.034)
+[1mExtract: [1890/2065][0m	Time 0.107 (0.084)	Data 0.054 (0.034)
+[1mExtract: [1900/2065][0m	Time 0.058 (0.084)	Data 0.010 (0.034)
+[1mExtract: [1910/2065][0m	Time 0.047 (0.084)	Data 0.000 (0.034)
+[1mExtract: [1920/2065][0m	Time 0.070 (0.084)	Data 0.023 (0.034)
+[1mExtract: [1930/2065][0m	Time 0.074 (0.084)	Data 0.025 (0.034)
+[1mExtract: [1940/2065][0m	Time 0.064 (0.084)	Data 0.017 (0.034)
+[1mExtract: [1950/2065][0m	Time 0.068 (0.083)	Data 0.020 (0.034)
+[1mExtract: [1960/2065][0m	Time 0.073 (0.083)	Data 0.025 (0.034)
+[1mExtract: [1970/2065][0m	Time 0.078 (0.083)	Data 0.032 (0.033)
+[1mExtract: [1980/2065][0m	Time 0.072 (0.083)	Data 0.023 (0.033)
+[1mExtract: [1990/2065][0m	Time 0.065 (0.083)	Data 0.017 (0.033)
+[1mExtract: [2000/2065][0m	Time 0.066 (0.083)	Data 0.018 (0.033)
+[1mExtract: [2010/2065][0m	Time 0.068 (0.083)	Data 0.020 (0.033)
+[1mExtract: [2020/2065][0m	Time 0.076 (0.083)	Data 0.029 (0.033)
+[1mExtract: [2030/2065][0m	Time 0.101 (0.083)	Data 0.050 (0.033)
+[1mExtract: [2040/2065][0m	Time 0.087 (0.082)	Data 0.037 (0.033)
+[1mExtract: [2050/2065][0m	Time 0.079 (0.082)	Data 0.030 (0.033)
+[1mExtract: [2060/2065][0m	Time 0.081 (0.082)	Data 0.033 (0.033)
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 2
+appel build valdataloader
+[1m=> Loaded val from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    153 |     1376 |         2
+  ----------------------------
+=> Loaded checkpoint 'logs/SpCL_test_4/model_best.pth'
+
+******************************* Start testing cuhk03-np *******************************
+
+[1mTest: [  0/106][0m	Time 0.276 (0.276)	Data 0.213 (0.213)
+[1mTest: [ 10/106][0m	Time 0.049 (0.105)	Data 0.000 (0.052)
+[1mTest: [ 20/106][0m	Time 0.048 (0.108)	Data 0.000 (0.057)
+[1mTest: [ 30/106][0m	Time 0.048 (0.102)	Data 0.000 (0.051)
+[1mTest: [ 40/106][0m	Time 0.048 (0.097)	Data 0.000 (0.046)
+[1mTest: [ 50/106][0m	Time 0.049 (0.095)	Data 0.000 (0.045)
+[1mTest: [ 60/106][0m	Time 0.049 (0.093)	Data 0.000 (0.042)
+[1mTest: [ 70/106][0m	Time 0.055 (0.092)	Data 0.000 (0.042)
+[1mTest: [ 80/106][0m	Time 0.050 (0.092)	Data 0.000 (0.041)
+[1mTest: [ 90/106][0m	Time 0.048 (0.091)	Data 0.000 (0.039)
+[1mTest: [100/106][0m	Time 0.047 (0.089)	Data 0.000 (0.038)
+
+
+Mean AP: 16.8%
+CMC Scores:
+  top-1          16.9%
+  top-5          30.8%
+  top-10         38.9%
+Testing time:  0:00:10.365513
+
+******************************* Finished testing *******************************
+
+
+************************* Start updating pseudo labels on epoch 4 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.060514211654663
+[[0.0000000e+00 0.0000000e+00 6.4139485e-02 ... 1.0000000e+00
+  1.0000000e+00 9.9744499e-01]
+ [0.0000000e+00 0.0000000e+00 6.4139545e-02 ... 1.0000000e+00
+  1.0000000e+00 9.9744499e-01]
+ [6.4139485e-02 6.4139545e-02 5.9604645e-08 ... 9.9719918e-01
+  1.0000000e+00 9.9744499e-01]
+ ...
+ [1.0000000e+00 1.0000000e+00 9.9719918e-01 ... 0.0000000e+00
+  1.4386421e-01 2.5993675e-01]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 1.4386421e-01
+  0.0000000e+00 2.6226556e-01]
+ [9.9744499e-01 9.9744499e-01 9.9744499e-01 ... 2.5993675e-01
+  2.6226556e-01 2.3841858e-07]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 4: 97 clusters, 259 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    356 |     1459 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [4][  0/120][0m	Time 0.768 (0.768)	hybrid_memory 1.582 (1.582)	kd_loss 2.852 (2.852)	MMD_loss 0.341 (0.341)
+[1mEpoch: [4][ 10/120][0m	Time 0.570 (0.591)	hybrid_memory 2.016 (2.091)	kd_loss 2.825 (3.069)	MMD_loss 0.338 (0.352)
+[1mEpoch: [4][ 20/120][0m	Time 1.023 (0.600)	hybrid_memory 1.981 (2.274)	kd_loss 2.622 (3.090)	MMD_loss 0.351 (0.350)
+[1mEpoch: [4][ 30/120][0m	Time 0.566 (0.593)	hybrid_memory 2.107 (2.138)	kd_loss 3.276 (3.054)	MMD_loss 0.339 (0.355)
+[1mEpoch: [4][ 40/120][0m	Time 0.581 (0.597)	hybrid_memory 1.900 (2.063)	kd_loss 3.519 (3.083)	MMD_loss 0.363 (0.357)
+[1mEpoch: [4][ 50/120][0m	Time 0.565 (0.599)	hybrid_memory 1.521 (2.018)	kd_loss 2.660 (3.069)	MMD_loss 0.367 (0.357)
+[1mEpoch: [4][ 60/120][0m	Time 0.981 (0.607)	hybrid_memory 1.410 (1.961)	kd_loss 2.615 (3.065)	MMD_loss 0.354 (0.356)
+[1mEpoch: [4][ 70/120][0m	Time 0.565 (0.602)	hybrid_memory 1.774 (1.908)	kd_loss 3.304 (3.083)	MMD_loss 0.366 (0.357)
+[1mEpoch: [4][ 80/120][0m	Time 1.006 (0.608)	hybrid_memory 1.097 (1.851)	kd_loss 2.532 (3.049)	MMD_loss 0.397 (0.360)
+[1mEpoch: [4][ 90/120][0m	Time 0.560 (0.607)	hybrid_memory 1.161 (1.831)	kd_loss 2.235 (3.025)	MMD_loss 0.378 (0.361)
+[1mEpoch: [4][100/120][0m	Time 1.407 (0.616)	hybrid_memory 1.280 (1.798)	kd_loss 2.640 (3.020)	MMD_loss 0.404 (0.362)
+[1mEpoch: [4][110/120][0m	Time 0.565 (0.611)	hybrid_memory 1.794 (1.774)	kd_loss 2.539 (3.014)	MMD_loss 0.376 (0.364)
+
+************************* Start updating pseudo labels on epoch 5 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.1842355728149414
+[[5.3644180e-07 2.6524305e-01 2.8030688e-01 ... 9.9276292e-01
+  9.8779207e-01 9.8898327e-01]
+ [2.6524305e-01 2.3841858e-07 2.8571457e-01 ... 9.9276292e-01
+  9.8779207e-01 9.8898327e-01]
+ [2.8030688e-01 2.8571457e-01 2.3841858e-07 ... 9.7881526e-01
+  9.6173882e-01 9.7201556e-01]
+ ...
+ [9.9276292e-01 9.9276292e-01 9.7881526e-01 ... 0.0000000e+00
+  2.8571421e-01 2.8571409e-01]
+ [9.8779207e-01 9.8779207e-01 9.6173882e-01 ... 2.8571421e-01
+  0.0000000e+00 2.7497905e-01]
+ [9.8898327e-01 9.8898327e-01 9.7201556e-01 ... 2.8571409e-01
+  2.7497905e-01 0.0000000e+00]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 5: 57 clusters, 703 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    760 |     1459 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [5][  0/120][0m	Time 0.634 (0.634)	hybrid_memory 2.073 (2.073)	kd_loss 2.196 (2.196)	MMD_loss 0.328 (0.328)
+[1mEpoch: [5][ 10/120][0m	Time 0.571 (0.575)	hybrid_memory 1.202 (1.649)	kd_loss 2.781 (2.657)	MMD_loss 0.327 (0.345)
+[1mEpoch: [5][ 20/120][0m	Time 0.568 (0.572)	hybrid_memory 0.878 (1.572)	kd_loss 2.623 (2.689)	MMD_loss 0.353 (0.347)
+[1mEpoch: [5][ 30/120][0m	Time 0.574 (0.597)	hybrid_memory 1.598 (1.599)	kd_loss 2.683 (2.733)	MMD_loss 0.353 (0.348)
+[1mEpoch: [5][ 40/120][0m	Time 0.578 (0.592)	hybrid_memory 1.618 (1.584)	kd_loss 3.463 (2.750)	MMD_loss 0.324 (0.349)
+[1mEpoch: [5][ 50/120][0m	Time 0.564 (0.589)	hybrid_memory 1.044 (1.517)	kd_loss 3.464 (2.764)	MMD_loss 0.350 (0.350)
+[1mEpoch: [5][ 60/120][0m	Time 0.581 (0.592)	hybrid_memory 1.677 (1.520)	kd_loss 2.345 (2.780)	MMD_loss 0.324 (0.348)
+[1mEpoch: [5][ 70/120][0m	Time 0.576 (0.589)	hybrid_memory 1.804 (1.532)	kd_loss 2.753 (2.828)	MMD_loss 0.323 (0.347)
+[1mEpoch: [5][ 80/120][0m	Time 0.568 (0.591)	hybrid_memory 1.239 (1.493)	kd_loss 3.563 (2.849)	MMD_loss 0.383 (0.349)
+[1mEpoch: [5][ 90/120][0m	Time 0.568 (0.598)	hybrid_memory 1.509 (1.478)	kd_loss 3.645 (2.874)	MMD_loss 0.391 (0.350)
+[1mEpoch: [5][100/120][0m	Time 0.568 (0.595)	hybrid_memory 0.671 (1.446)	kd_loss 2.874 (2.884)	MMD_loss 0.369 (0.350)
+[1mEpoch: [5][110/120][0m	Time 0.583 (0.592)	hybrid_memory 1.070 (1.422)	kd_loss 2.988 (2.872)	MMD_loss 0.366 (0.351)
+
+************************* Start validating cuhk03-np on epoch 5 *************************n
+[1mVal: [ 0/22][0m	Time 0.272 (0.272)	Data 0.187 (0.187)
+[1mVal: [10/22][0m	Time 0.083 (0.084)	Data 0.032 (0.029)
+[1mVal: [20/22][0m	Time 0.047 (0.081)	Data 0.000 (0.027)
+
+
+Mean AP: 32.4%
+CMC Scores:
+  top-1          31.9%
+  top-5          54.3%
+  top-10         66.0%
+Validating time:  0:00:02.208950
+
+************************* Finished validating *************************
+
+val map : 0.32441848516464233
+in rank 0 val
+[92m
+ * Finished epoch   5  mAP: 32.4%  best: 32.4% *
+[0m
+start training task 3 out of 5 tasks
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 3
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+      1 |     1515 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8001 |   133660 |         5
+  ----------------------------
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 2
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    150 |     1459 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8150 |   133604 |         5
+  ----------------------------
+[1mExtract: [  0/120][0m	Time 0.295 (0.295)	Data 0.198 (0.198)
+[1mExtract: [ 10/120][0m	Time 0.093 (0.115)	Data 0.000 (0.018)
+[1mExtract: [ 20/120][0m	Time 0.091 (0.103)	Data 0.000 (0.010)
+[1mExtract: [ 30/120][0m	Time 0.091 (0.099)	Data 0.000 (0.007)
+[1mExtract: [ 40/120][0m	Time 0.091 (0.097)	Data 0.000 (0.005)
+[1mExtract: [ 50/120][0m	Time 0.091 (0.096)	Data 0.000 (0.004)
+[1mExtract: [ 60/120][0m	Time 0.091 (0.095)	Data 0.000 (0.003)
+[1mExtract: [ 70/120][0m	Time 0.092 (0.095)	Data 0.000 (0.003)
+[1mExtract: [ 80/120][0m	Time 0.091 (0.094)	Data 0.000 (0.003)
+[1mExtract: [ 90/120][0m	Time 0.091 (0.094)	Data 0.000 (0.002)
+[1mExtract: [100/120][0m	Time 0.094 (0.094)	Data 0.000 (0.002)
+[1mExtract: [110/120][0m	Time 0.092 (0.094)	Data 0.000 (0.002)
+done images / similarities
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+1
+Loading randperson dataset
+enter filtration similarities for randperson
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+=> Loaded checkpoint './data/OpenUnReID/pretrained/source_pretrain_randperson/model_best.pth'
+num memory : 9515
+num_features : 2048
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 3
+Loading randperson dataset
+[1mExtract: [ 0/24][0m	Time 0.432 (0.432)	Data 0.357 (0.357)
+[1mExtract: [10/24][0m	Time 0.146 (0.157)	Data 0.091 (0.101)
+[1mExtract: [20/24][0m	Time 0.305 (0.179)	Data 0.251 (0.125)
+[1mExtract: [   0/2065][0m	Time 0.238 (0.238)	Data 0.179 (0.179)
+[1mExtract: [  10/2065][0m	Time 0.049 (0.085)	Data 0.000 (0.033)
+[1mExtract: [  20/2065][0m	Time 0.049 (0.079)	Data 0.000 (0.027)
+[1mExtract: [  30/2065][0m	Time 0.054 (0.078)	Data 0.000 (0.026)
+[1mExtract: [  40/2065][0m	Time 0.049 (0.077)	Data 0.000 (0.025)
+[1mExtract: [  50/2065][0m	Time 0.049 (0.077)	Data 0.000 (0.025)
+[1mExtract: [  60/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [  70/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [  80/2065][0m	Time 0.049 (0.075)	Data 0.000 (0.024)
+[1mExtract: [  90/2065][0m	Time 0.049 (0.075)	Data 0.000 (0.024)
+[1mExtract: [ 100/2065][0m	Time 0.049 (0.074)	Data 0.000 (0.024)
+[1mExtract: [ 110/2065][0m	Time 0.049 (0.074)	Data 0.000 (0.023)
+[1mExtract: [ 120/2065][0m	Time 0.049 (0.074)	Data 0.000 (0.023)
+[1mExtract: [ 130/2065][0m	Time 0.049 (0.074)	Data 0.000 (0.023)
+[1mExtract: [ 140/2065][0m	Time 0.068 (0.074)	Data 0.019 (0.023)
+[1mExtract: [ 150/2065][0m	Time 0.049 (0.074)	Data 0.000 (0.023)
+[1mExtract: [ 160/2065][0m	Time 0.049 (0.074)	Data 0.000 (0.023)
+[1mExtract: [ 170/2065][0m	Time 0.049 (0.074)	Data 0.000 (0.023)
+[1mExtract: [ 180/2065][0m	Time 0.048 (0.074)	Data 0.000 (0.023)
+[1mExtract: [ 190/2065][0m	Time 0.069 (0.074)	Data 0.019 (0.023)
+[1mExtract: [ 200/2065][0m	Time 0.087 (0.074)	Data 0.039 (0.023)
+[1mExtract: [ 210/2065][0m	Time 0.083 (0.074)	Data 0.034 (0.023)
+[1mExtract: [ 220/2065][0m	Time 0.101 (0.073)	Data 0.052 (0.023)
+[1mExtract: [ 230/2065][0m	Time 0.078 (0.073)	Data 0.029 (0.023)
+[1mExtract: [ 240/2065][0m	Time 0.070 (0.074)	Data 0.022 (0.023)
+[1mExtract: [ 250/2065][0m	Time 0.086 (0.074)	Data 0.037 (0.023)
+[1mExtract: [ 260/2065][0m	Time 0.092 (0.074)	Data 0.039 (0.023)
+[1mExtract: [ 270/2065][0m	Time 0.084 (0.074)	Data 0.032 (0.023)
+[1mExtract: [ 280/2065][0m	Time 0.086 (0.073)	Data 0.034 (0.023)
+[1mExtract: [ 290/2065][0m	Time 0.087 (0.073)	Data 0.035 (0.023)
+[1mExtract: [ 300/2065][0m	Time 0.086 (0.073)	Data 0.034 (0.023)
+[1mExtract: [ 310/2065][0m	Time 0.083 (0.073)	Data 0.033 (0.023)
+[1mExtract: [ 320/2065][0m	Time 0.083 (0.073)	Data 0.031 (0.023)
+[1mExtract: [ 330/2065][0m	Time 0.111 (0.073)	Data 0.058 (0.023)
+[1mExtract: [ 340/2065][0m	Time 0.120 (0.073)	Data 0.067 (0.023)
+[1mExtract: [ 350/2065][0m	Time 0.090 (0.073)	Data 0.037 (0.023)
+[1mExtract: [ 360/2065][0m	Time 0.082 (0.073)	Data 0.031 (0.023)
+[1mExtract: [ 370/2065][0m	Time 0.100 (0.073)	Data 0.046 (0.023)
+[1mExtract: [ 380/2065][0m	Time 0.083 (0.073)	Data 0.031 (0.023)
+[1mExtract: [ 390/2065][0m	Time 0.083 (0.073)	Data 0.032 (0.023)
+[1mExtract: [ 400/2065][0m	Time 0.095 (0.073)	Data 0.043 (0.022)
+[1mExtract: [ 410/2065][0m	Time 0.111 (0.073)	Data 0.058 (0.022)
+[1mExtract: [ 420/2065][0m	Time 0.105 (0.073)	Data 0.052 (0.023)
+[1mExtract: [ 430/2065][0m	Time 0.105 (0.073)	Data 0.054 (0.023)
+[1mExtract: [ 440/2065][0m	Time 0.102 (0.073)	Data 0.051 (0.023)
+[1mExtract: [ 450/2065][0m	Time 0.098 (0.073)	Data 0.047 (0.023)
+[1mExtract: [ 460/2065][0m	Time 0.096 (0.073)	Data 0.044 (0.023)
+[1mExtract: [ 470/2065][0m	Time 0.097 (0.073)	Data 0.046 (0.023)
+[1mExtract: [ 480/2065][0m	Time 0.098 (0.073)	Data 0.046 (0.023)
+[1mExtract: [ 490/2065][0m	Time 0.085 (0.073)	Data 0.034 (0.023)
+[1mExtract: [ 500/2065][0m	Time 0.083 (0.073)	Data 0.032 (0.023)
+[1mExtract: [ 510/2065][0m	Time 0.096 (0.073)	Data 0.044 (0.022)
+[1mExtract: [ 520/2065][0m	Time 0.092 (0.073)	Data 0.039 (0.022)
+[1mExtract: [ 530/2065][0m	Time 0.088 (0.072)	Data 0.037 (0.022)
+[1mExtract: [ 540/2065][0m	Time 0.101 (0.072)	Data 0.048 (0.022)
+[1mExtract: [ 550/2065][0m	Time 0.095 (0.072)	Data 0.042 (0.022)
+[1mExtract: [ 560/2065][0m	Time 0.099 (0.072)	Data 0.047 (0.022)
+[1mExtract: [ 570/2065][0m	Time 0.105 (0.072)	Data 0.053 (0.022)
+[1mExtract: [ 580/2065][0m	Time 0.073 (0.072)	Data 0.022 (0.022)
+[1mExtract: [ 590/2065][0m	Time 0.093 (0.072)	Data 0.043 (0.022)
+[1mExtract: [ 600/2065][0m	Time 0.082 (0.072)	Data 0.031 (0.022)
+[1mExtract: [ 610/2065][0m	Time 0.088 (0.072)	Data 0.037 (0.022)
+[1mExtract: [ 620/2065][0m	Time 0.128 (0.072)	Data 0.074 (0.022)
+[1mExtract: [ 630/2065][0m	Time 0.094 (0.072)	Data 0.042 (0.022)
+[1mExtract: [ 640/2065][0m	Time 0.089 (0.072)	Data 0.037 (0.022)
+[1mExtract: [ 650/2065][0m	Time 0.095 (0.072)	Data 0.043 (0.022)
+[1mExtract: [ 660/2065][0m	Time 0.061 (0.072)	Data 0.012 (0.022)
+[1mExtract: [ 670/2065][0m	Time 0.061 (0.072)	Data 0.012 (0.022)
+[1mExtract: [ 680/2065][0m	Time 0.073 (0.072)	Data 0.022 (0.022)
+[1mExtract: [ 690/2065][0m	Time 0.053 (0.072)	Data 0.000 (0.022)
+[1mExtract: [ 700/2065][0m	Time 0.068 (0.072)	Data 0.018 (0.022)
+[1mExtract: [ 710/2065][0m	Time 0.099 (0.072)	Data 0.046 (0.022)
+[1mExtract: [ 720/2065][0m	Time 0.104 (0.072)	Data 0.051 (0.022)
+[1mExtract: [ 730/2065][0m	Time 0.083 (0.072)	Data 0.031 (0.022)
+[1mExtract: [ 740/2065][0m	Time 0.091 (0.072)	Data 0.039 (0.022)
+[1mExtract: [ 750/2065][0m	Time 0.100 (0.072)	Data 0.048 (0.022)
+[1mExtract: [ 760/2065][0m	Time 0.118 (0.072)	Data 0.066 (0.022)
+[1mExtract: [ 770/2065][0m	Time 0.107 (0.072)	Data 0.054 (0.022)
+[1mExtract: [ 780/2065][0m	Time 0.127 (0.072)	Data 0.074 (0.022)
+[1mExtract: [ 790/2065][0m	Time 0.101 (0.072)	Data 0.048 (0.022)
+[1mExtract: [ 800/2065][0m	Time 0.090 (0.072)	Data 0.037 (0.022)
+[1mExtract: [ 810/2065][0m	Time 0.105 (0.072)	Data 0.053 (0.022)
+[1mExtract: [ 820/2065][0m	Time 0.103 (0.072)	Data 0.052 (0.022)
+[1mExtract: [ 830/2065][0m	Time 0.068 (0.072)	Data 0.018 (0.022)
+[1mExtract: [ 840/2065][0m	Time 0.098 (0.072)	Data 0.045 (0.022)
+[1mExtract: [ 850/2065][0m	Time 0.084 (0.072)	Data 0.032 (0.022)
+[1mExtract: [ 860/2065][0m	Time 0.091 (0.072)	Data 0.040 (0.022)
+[1mExtract: [ 870/2065][0m	Time 0.092 (0.072)	Data 0.041 (0.022)
+[1mExtract: [ 880/2065][0m	Time 0.095 (0.072)	Data 0.043 (0.022)
+[1mExtract: [ 890/2065][0m	Time 0.080 (0.072)	Data 0.031 (0.022)
+[1mExtract: [ 900/2065][0m	Time 0.099 (0.072)	Data 0.046 (0.022)
+[1mExtract: [ 910/2065][0m	Time 0.085 (0.072)	Data 0.033 (0.022)
+[1mExtract: [ 920/2065][0m	Time 0.108 (0.072)	Data 0.056 (0.022)
+[1mExtract: [ 930/2065][0m	Time 0.092 (0.072)	Data 0.040 (0.022)
+[1mExtract: [ 940/2065][0m	Time 0.085 (0.072)	Data 0.035 (0.022)
+[1mExtract: [ 950/2065][0m	Time 0.091 (0.072)	Data 0.039 (0.022)
+[1mExtract: [ 960/2065][0m	Time 0.083 (0.072)	Data 0.034 (0.022)
+[1mExtract: [ 970/2065][0m	Time 0.088 (0.072)	Data 0.036 (0.022)
+[1mExtract: [ 980/2065][0m	Time 0.085 (0.072)	Data 0.033 (0.022)
+[1mExtract: [ 990/2065][0m	Time 0.092 (0.072)	Data 0.043 (0.022)
+[1mExtract: [1000/2065][0m	Time 0.096 (0.072)	Data 0.047 (0.022)
+[1mExtract: [1010/2065][0m	Time 0.097 (0.072)	Data 0.048 (0.022)
+[1mExtract: [1020/2065][0m	Time 0.099 (0.072)	Data 0.051 (0.022)
+[1mExtract: [1030/2065][0m	Time 0.102 (0.072)	Data 0.051 (0.022)
+[1mExtract: [1040/2065][0m	Time 0.110 (0.072)	Data 0.058 (0.022)
+[1mExtract: [1050/2065][0m	Time 0.079 (0.072)	Data 0.028 (0.022)
+[1mExtract: [1060/2065][0m	Time 0.103 (0.072)	Data 0.051 (0.022)
+[1mExtract: [1070/2065][0m	Time 0.088 (0.072)	Data 0.039 (0.022)
+[1mExtract: [1080/2065][0m	Time 0.101 (0.072)	Data 0.051 (0.022)
+[1mExtract: [1090/2065][0m	Time 0.105 (0.072)	Data 0.053 (0.022)
+[1mExtract: [1100/2065][0m	Time 0.083 (0.072)	Data 0.033 (0.022)
+[1mExtract: [1110/2065][0m	Time 0.098 (0.072)	Data 0.046 (0.022)
+[1mExtract: [1120/2065][0m	Time 0.075 (0.072)	Data 0.025 (0.022)
+[1mExtract: [1130/2065][0m	Time 0.101 (0.072)	Data 0.049 (0.022)
+[1mExtract: [1140/2065][0m	Time 0.094 (0.072)	Data 0.041 (0.022)
+[1mExtract: [1150/2065][0m	Time 0.098 (0.072)	Data 0.044 (0.022)
+[1mExtract: [1160/2065][0m	Time 0.088 (0.072)	Data 0.036 (0.022)
+[1mExtract: [1170/2065][0m	Time 0.108 (0.072)	Data 0.056 (0.022)
+[1mExtract: [1180/2065][0m	Time 0.120 (0.072)	Data 0.067 (0.022)
+[1mExtract: [1190/2065][0m	Time 0.090 (0.072)	Data 0.038 (0.022)
+[1mExtract: [1200/2065][0m	Time 0.098 (0.072)	Data 0.044 (0.022)
+[1mExtract: [1210/2065][0m	Time 0.102 (0.072)	Data 0.047 (0.022)
+[1mExtract: [1220/2065][0m	Time 0.100 (0.072)	Data 0.049 (0.022)
+[1mExtract: [1230/2065][0m	Time 0.106 (0.072)	Data 0.054 (0.022)
+[1mExtract: [1240/2065][0m	Time 0.171 (0.072)	Data 0.107 (0.022)
+[1mExtract: [1250/2065][0m	Time 0.084 (0.072)	Data 0.033 (0.022)
+[1mExtract: [1260/2065][0m	Time 0.122 (0.072)	Data 0.071 (0.022)
+[1mExtract: [1270/2065][0m	Time 0.102 (0.072)	Data 0.052 (0.022)
+[1mExtract: [1280/2065][0m	Time 0.102 (0.072)	Data 0.051 (0.022)
+[1mExtract: [1290/2065][0m	Time 0.103 (0.072)	Data 0.052 (0.022)
+[1mExtract: [1300/2065][0m	Time 0.102 (0.072)	Data 0.051 (0.022)
+[1mExtract: [1310/2065][0m	Time 0.094 (0.072)	Data 0.042 (0.022)
+[1mExtract: [1320/2065][0m	Time 0.066 (0.072)	Data 0.017 (0.022)
+[1mExtract: [1330/2065][0m	Time 0.097 (0.072)	Data 0.047 (0.022)
+[1mExtract: [1340/2065][0m	Time 0.150 (0.072)	Data 0.099 (0.022)
+[1mExtract: [1350/2065][0m	Time 0.196 (0.073)	Data 0.145 (0.022)
+[1mExtract: [1360/2065][0m	Time 0.217 (0.073)	Data 0.162 (0.023)
+[1mExtract: [1370/2065][0m	Time 0.096 (0.073)	Data 0.045 (0.023)
+[1mExtract: [1380/2065][0m	Time 0.115 (0.073)	Data 0.063 (0.023)
+[1mExtract: [1390/2065][0m	Time 0.113 (0.073)	Data 0.060 (0.023)
+[1mExtract: [1400/2065][0m	Time 0.096 (0.073)	Data 0.044 (0.023)
+[1mExtract: [1410/2065][0m	Time 0.086 (0.073)	Data 0.035 (0.023)
+[1mExtract: [1420/2065][0m	Time 0.100 (0.073)	Data 0.050 (0.023)
+[1mExtract: [1430/2065][0m	Time 0.082 (0.073)	Data 0.032 (0.023)
+[1mExtract: [1440/2065][0m	Time 0.114 (0.073)	Data 0.061 (0.023)
+[1mExtract: [1450/2065][0m	Time 0.108 (0.073)	Data 0.056 (0.023)
+[1mExtract: [1460/2065][0m	Time 0.107 (0.073)	Data 0.056 (0.023)
+[1mExtract: [1470/2065][0m	Time 0.092 (0.073)	Data 0.041 (0.023)
+[1mExtract: [1480/2065][0m	Time 0.124 (0.073)	Data 0.073 (0.023)
+[1mExtract: [1490/2065][0m	Time 0.093 (0.073)	Data 0.043 (0.023)
+[1mExtract: [1500/2065][0m	Time 0.084 (0.073)	Data 0.034 (0.023)
+[1mExtract: [1510/2065][0m	Time 0.121 (0.073)	Data 0.069 (0.023)
+[1mExtract: [1520/2065][0m	Time 0.091 (0.073)	Data 0.039 (0.023)
+[1mExtract: [1530/2065][0m	Time 0.100 (0.073)	Data 0.044 (0.023)
+[1mExtract: [1540/2065][0m	Time 0.086 (0.073)	Data 0.033 (0.023)
+[1mExtract: [1550/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1560/2065][0m	Time 0.052 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1570/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1580/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1590/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1600/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1610/2065][0m	Time 0.049 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1620/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1630/2065][0m	Time 0.053 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1640/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1650/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1660/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1670/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1680/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1690/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1700/2065][0m	Time 0.048 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1710/2065][0m	Time 0.049 (0.073)	Data 0.000 (0.023)
+[1mExtract: [1720/2065][0m	Time 0.106 (0.073)	Data 0.054 (0.023)
+[1mExtract: [1730/2065][0m	Time 0.142 (0.073)	Data 0.094 (0.023)
+[1mExtract: [1740/2065][0m	Time 0.187 (0.074)	Data 0.135 (0.024)
+[1mExtract: [1750/2065][0m	Time 0.173 (0.074)	Data 0.120 (0.024)
+[1mExtract: [1760/2065][0m	Time 0.193 (0.074)	Data 0.140 (0.024)
+[1mExtract: [1770/2065][0m	Time 0.087 (0.074)	Data 0.035 (0.024)
+[1mExtract: [1780/2065][0m	Time 0.104 (0.074)	Data 0.050 (0.024)
+[1mExtract: [1790/2065][0m	Time 0.102 (0.074)	Data 0.052 (0.024)
+[1mExtract: [1800/2065][0m	Time 0.111 (0.074)	Data 0.062 (0.024)
+[1mExtract: [1810/2065][0m	Time 0.119 (0.074)	Data 0.067 (0.024)
+[1mExtract: [1820/2065][0m	Time 0.104 (0.074)	Data 0.054 (0.024)
+[1mExtract: [1830/2065][0m	Time 0.095 (0.074)	Data 0.046 (0.024)
+[1mExtract: [1840/2065][0m	Time 0.094 (0.074)	Data 0.041 (0.024)
+[1mExtract: [1850/2065][0m	Time 0.090 (0.074)	Data 0.037 (0.024)
+[1mExtract: [1860/2065][0m	Time 0.119 (0.074)	Data 0.068 (0.024)
+[1mExtract: [1870/2065][0m	Time 0.094 (0.074)	Data 0.042 (0.024)
+[1mExtract: [1880/2065][0m	Time 0.093 (0.074)	Data 0.042 (0.024)
+[1mExtract: [1890/2065][0m	Time 0.097 (0.074)	Data 0.046 (0.024)
+[1mExtract: [1900/2065][0m	Time 0.098 (0.074)	Data 0.048 (0.024)
+[1mExtract: [1910/2065][0m	Time 0.105 (0.074)	Data 0.056 (0.024)
+[1mExtract: [1920/2065][0m	Time 0.122 (0.074)	Data 0.074 (0.024)
+[1mExtract: [1930/2065][0m	Time 0.091 (0.074)	Data 0.041 (0.024)
+[1mExtract: [1940/2065][0m	Time 0.119 (0.074)	Data 0.068 (0.024)
+[1mExtract: [1950/2065][0m	Time 0.106 (0.074)	Data 0.056 (0.024)
+[1mExtract: [1960/2065][0m	Time 0.105 (0.074)	Data 0.056 (0.025)
+[1mExtract: [1970/2065][0m	Time 0.101 (0.074)	Data 0.050 (0.024)
+[1mExtract: [1980/2065][0m	Time 0.083 (0.074)	Data 0.031 (0.024)
+[1mExtract: [1990/2065][0m	Time 0.094 (0.074)	Data 0.039 (0.024)
+[1mExtract: [2000/2065][0m	Time 0.104 (0.074)	Data 0.050 (0.024)
+[1mExtract: [2010/2065][0m	Time 0.053 (0.074)	Data 0.000 (0.024)
+[1mExtract: [2020/2065][0m	Time 0.124 (0.075)	Data 0.071 (0.025)
+[1mExtract: [2030/2065][0m	Time 0.111 (0.075)	Data 0.059 (0.025)
+[1mExtract: [2040/2065][0m	Time 0.105 (0.075)	Data 0.053 (0.025)
+[1mExtract: [2050/2065][0m	Time 0.112 (0.075)	Data 0.060 (0.025)
+[1mExtract: [2060/2065][0m	Time 0.098 (0.075)	Data 0.049 (0.025)
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 3
+appel build valdataloader
+[1m=> Loaded val from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    153 |     1376 |         2
+  ----------------------------
+=> Loaded checkpoint 'logs/SpCL_test_4/model_best.pth'
+
+******************************* Start testing cuhk03-np *******************************
+
+[1mTest: [  0/106][0m	Time 0.274 (0.274)	Data 0.215 (0.215)
+[1mTest: [ 10/106][0m	Time 0.098 (0.089)	Data 0.046 (0.037)
+[1mTest: [ 20/106][0m	Time 0.114 (0.086)	Data 0.063 (0.035)
+[1mTest: [ 30/106][0m	Time 0.100 (0.082)	Data 0.050 (0.032)
+[1mTest: [ 40/106][0m	Time 0.120 (0.081)	Data 0.069 (0.031)
+[1mTest: [ 50/106][0m	Time 0.109 (0.082)	Data 0.057 (0.032)
+[1mTest: [ 60/106][0m	Time 0.084 (0.081)	Data 0.033 (0.031)
+[1mTest: [ 70/106][0m	Time 0.048 (0.080)	Data 0.000 (0.030)
+[1mTest: [ 80/106][0m	Time 0.048 (0.079)	Data 0.000 (0.029)
+[1mTest: [ 90/106][0m	Time 0.140 (0.080)	Data 0.089 (0.030)
+[1mTest: [100/106][0m	Time 0.098 (0.079)	Data 0.049 (0.030)
+
+
+Mean AP: 18.1%
+CMC Scores:
+  top-1          19.1%
+  top-5          32.2%
+  top-10         40.1%
+Testing time:  0:00:09.367094
+
+******************************* Finished testing *******************************
+
+
+************************* Start updating pseudo labels on epoch 6 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.1480233669281006
+[[0.0000000e+00 5.0105989e-02 0.0000000e+00 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ [5.0105989e-02 0.0000000e+00 5.0105929e-02 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ [0.0000000e+00 5.0105929e-02 0.0000000e+00 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ ...
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 5.9604645e-08
+  9.6795917e-02 5.9604645e-08]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 9.6795917e-02
+  0.0000000e+00 9.6795917e-02]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 5.9604645e-08
+  9.6795917e-02 5.9604645e-08]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 6: 99 clusters, 447 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    546 |     1515 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [6][  0/120][0m	Time 0.776 (0.776)	hybrid_memory 2.427 (2.427)	kd_loss 2.953 (2.953)	MMD_loss 0.356 (0.356)
+[1mEpoch: [6][ 10/120][0m	Time 0.588 (0.593)	hybrid_memory 2.498 (1.943)	kd_loss 3.838 (3.112)	MMD_loss 0.331 (0.359)
+[1mEpoch: [6][ 20/120][0m	Time 0.566 (0.584)	hybrid_memory 2.340 (1.955)	kd_loss 3.360 (3.184)	MMD_loss 0.365 (0.358)
+[1mEpoch: [6][ 30/120][0m	Time 0.571 (0.612)	hybrid_memory 1.299 (1.930)	kd_loss 2.660 (3.079)	MMD_loss 0.344 (0.358)
+[1mEpoch: [6][ 40/120][0m	Time 0.573 (0.614)	hybrid_memory 2.162 (1.898)	kd_loss 2.460 (3.003)	MMD_loss 0.346 (0.360)
+[1mEpoch: [6][ 50/120][0m	Time 0.560 (0.607)	hybrid_memory 2.151 (1.868)	kd_loss 2.718 (2.956)	MMD_loss 0.342 (0.362)
+[1mEpoch: [6][ 60/120][0m	Time 0.588 (0.618)	hybrid_memory 1.449 (1.825)	kd_loss 3.232 (2.951)	MMD_loss 0.370 (0.361)
+[1mEpoch: [6][ 70/120][0m	Time 0.572 (0.612)	hybrid_memory 1.254 (1.754)	kd_loss 2.479 (2.919)	MMD_loss 0.368 (0.362)
+[1mEpoch: [6][ 80/120][0m	Time 0.575 (0.618)	hybrid_memory 1.396 (1.730)	kd_loss 2.652 (2.881)	MMD_loss 0.362 (0.363)
+[1mEpoch: [6][ 90/120][0m	Time 0.572 (0.618)	hybrid_memory 1.715 (1.717)	kd_loss 2.705 (2.873)	MMD_loss 0.349 (0.363)
+[1mEpoch: [6][100/120][0m	Time 0.586 (0.613)	hybrid_memory 1.985 (1.682)	kd_loss 3.254 (2.874)	MMD_loss 0.366 (0.363)
+[1mEpoch: [6][110/120][0m	Time 0.564 (0.618)	hybrid_memory 2.675 (1.682)	kd_loss 3.117 (2.871)	MMD_loss 0.368 (0.362)
+
+************************* Start updating pseudo labels on epoch 7 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.2817811965942383
+[[0.         0.24162972 0.27273035 ... 0.99605036 0.99605036 0.99605036]
+ [0.24162972 0.         0.2716385  ... 0.9975661  0.9975661  0.9975661 ]
+ [0.27273035 0.2716385  0.         ... 1.         1.         1.        ]
+ ...
+ [0.99605036 0.9975661  1.         ... 0.         0.06669241 0.        ]
+ [0.99605036 0.9975661  1.         ... 0.06669241 0.         0.06669241]
+ [0.99605036 0.9975661  1.         ... 0.         0.06669241 0.        ]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 7: 72 clusters, 518 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    590 |     1515 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [7][  0/120][0m	Time 0.652 (0.652)	hybrid_memory 1.561 (1.561)	kd_loss 2.439 (2.439)	MMD_loss 0.353 (0.353)
+[1mEpoch: [7][ 10/120][0m	Time 0.576 (0.601)	hybrid_memory 1.857 (1.418)	kd_loss 2.624 (2.554)	MMD_loss 0.366 (0.367)
+[1mEpoch: [7][ 20/120][0m	Time 0.584 (0.610)	hybrid_memory 1.325 (1.509)	kd_loss 2.715 (2.615)	MMD_loss 0.330 (0.362)
+[1mEpoch: [7][ 30/120][0m	Time 0.591 (0.630)	hybrid_memory 1.231 (1.540)	kd_loss 2.612 (2.693)	MMD_loss 0.364 (0.364)
+[1mEpoch: [7][ 40/120][0m	Time 0.563 (0.614)	hybrid_memory 1.799 (1.541)	kd_loss 2.768 (2.748)	MMD_loss 0.372 (0.364)
+[1mEpoch: [7][ 50/120][0m	Time 1.026 (0.623)	hybrid_memory 1.493 (1.573)	kd_loss 2.759 (2.747)	MMD_loss 0.375 (0.365)
+[1mEpoch: [7][ 60/120][0m	Time 0.564 (0.614)	hybrid_memory 2.021 (1.542)	kd_loss 2.521 (2.774)	MMD_loss 0.371 (0.365)
+[1mEpoch: [7][ 70/120][0m	Time 0.577 (0.608)	hybrid_memory 1.419 (1.511)	kd_loss 2.663 (2.760)	MMD_loss 0.371 (0.366)
+[1mEpoch: [7][ 80/120][0m	Time 0.554 (0.610)	hybrid_memory 0.869 (1.528)	kd_loss 2.344 (2.756)	MMD_loss 0.377 (0.367)
+[1mEpoch: [7][ 90/120][0m	Time 0.557 (0.605)	hybrid_memory 1.123 (1.476)	kd_loss 2.642 (2.737)	MMD_loss 0.356 (0.367)
+[1mEpoch: [7][100/120][0m	Time 0.564 (0.606)	hybrid_memory 1.738 (1.496)	kd_loss 2.733 (2.728)	MMD_loss 0.362 (0.368)
+[1mEpoch: [7][110/120][0m	Time 0.567 (0.603)	hybrid_memory 1.687 (1.486)	kd_loss 2.792 (2.740)	MMD_loss 0.388 (0.368)
+
+************************* Start validating cuhk03-np on epoch 7 *************************n
+[1mVal: [ 0/22][0m	Time 0.257 (0.257)	Data 0.175 (0.175)
+[1mVal: [10/22][0m	Time 0.099 (0.080)	Data 0.047 (0.028)
+[1mVal: [20/22][0m	Time 0.140 (0.080)	Data 0.089 (0.030)
+
+
+Mean AP: 33.8%
+CMC Scores:
+  top-1          32.7%
+  top-5          55.4%
+  top-10         67.3%
+Validating time:  0:00:02.239561
+
+************************* Finished validating *************************
+
+val map : 0.33783474564552307
+in rank 0 val
+[92m
+ * Finished epoch   7  mAP: 33.8%  best: 33.8% *
+[0m
+start training task 4 out of 5 tasks
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 4
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+      1 |     1498 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8001 |   133643 |         5
+  ----------------------------
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+0
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 3
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    157 |     1515 |         2
+  ----------------------------
+1
+Loading randperson dataset
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8157 |   133660 |         5
+  ----------------------------
+[1mExtract: [  0/120][0m	Time 0.334 (0.334)	Data 0.235 (0.235)
+[1mExtract: [ 10/120][0m	Time 0.093 (0.117)	Data 0.000 (0.021)
+[1mExtract: [ 20/120][0m	Time 0.092 (0.106)	Data 0.000 (0.011)
+[1mExtract: [ 30/120][0m	Time 0.091 (0.101)	Data 0.000 (0.008)
+[1mExtract: [ 40/120][0m	Time 0.092 (0.099)	Data 0.000 (0.006)
+[1mExtract: [ 50/120][0m	Time 0.092 (0.097)	Data 0.000 (0.005)
+[1mExtract: [ 60/120][0m	Time 0.093 (0.096)	Data 0.000 (0.004)
+[1mExtract: [ 70/120][0m	Time 0.092 (0.096)	Data 0.000 (0.003)
+[1mExtract: [ 80/120][0m	Time 0.091 (0.095)	Data 0.000 (0.003)
+[1mExtract: [ 90/120][0m	Time 0.090 (0.095)	Data 0.000 (0.003)
+[1mExtract: [100/120][0m	Time 0.107 (0.094)	Data 0.000 (0.002)
+[1mExtract: [110/120][0m	Time 0.092 (0.095)	Data 0.000 (0.002)
+done images / similarities
+appel a build_train_dataloader
+The training is in a un/semi-supervised manner with 2 dataset(s) (['cuhk03-np', 'custom_randperson']),
+where ['cuhk03-np'] have no labels.
+1
+Loading randperson dataset
+enter filtration similarities for randperson
+[1m=> Loaded train from [0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+[1m=> Loaded the Joint Training Dataset[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+   8000 |   132145 |         4
+  ----------------------------
+=> Loaded checkpoint './data/OpenUnReID/pretrained/source_pretrain_randperson/model_best.pth'
+num memory : 9498
+num_features : 2048
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 4
+Loading randperson dataset
+[1mExtract: [ 0/24][0m	Time 0.484 (0.484)	Data 0.403 (0.403)
+[1mExtract: [10/24][0m	Time 0.186 (0.179)	Data 0.132 (0.125)
+[1mExtract: [20/24][0m	Time 0.120 (0.147)	Data 0.068 (0.094)
+[1mExtract: [   0/2065][0m	Time 0.259 (0.259)	Data 0.201 (0.201)
+[1mExtract: [  10/2065][0m	Time 0.093 (0.093)	Data 0.043 (0.041)
+[1mExtract: [  20/2065][0m	Time 0.099 (0.085)	Data 0.047 (0.034)
+[1mExtract: [  30/2065][0m	Time 0.095 (0.081)	Data 0.042 (0.030)
+[1mExtract: [  40/2065][0m	Time 0.094 (0.078)	Data 0.042 (0.028)
+[1mExtract: [  50/2065][0m	Time 0.116 (0.078)	Data 0.063 (0.027)
+[1mExtract: [  60/2065][0m	Time 0.083 (0.077)	Data 0.032 (0.026)
+[1mExtract: [  70/2065][0m	Time 0.112 (0.077)	Data 0.061 (0.026)
+[1mExtract: [  80/2065][0m	Time 0.084 (0.076)	Data 0.033 (0.026)
+[1mExtract: [  90/2065][0m	Time 0.104 (0.076)	Data 0.050 (0.026)
+[1mExtract: [ 100/2065][0m	Time 0.103 (0.076)	Data 0.050 (0.026)
+[1mExtract: [ 110/2065][0m	Time 0.094 (0.076)	Data 0.041 (0.025)
+[1mExtract: [ 120/2065][0m	Time 0.180 (0.076)	Data 0.127 (0.026)
+[1mExtract: [ 130/2065][0m	Time 0.097 (0.077)	Data 0.045 (0.026)
+[1mExtract: [ 140/2065][0m	Time 0.076 (0.076)	Data 0.025 (0.026)
+[1mExtract: [ 150/2065][0m	Time 0.054 (0.076)	Data 0.006 (0.026)
+[1mExtract: [ 160/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 170/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 180/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 190/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 200/2065][0m	Time 0.057 (0.076)	Data 0.009 (0.025)
+[1mExtract: [ 210/2065][0m	Time 0.054 (0.076)	Data 0.006 (0.026)
+[1mExtract: [ 220/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 230/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 240/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.026)
+[1mExtract: [ 250/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [ 260/2065][0m	Time 0.051 (0.077)	Data 0.003 (0.027)
+[1mExtract: [ 270/2065][0m	Time 0.048 (0.077)	Data 0.000 (0.027)
+[1mExtract: [ 280/2065][0m	Time 0.066 (0.077)	Data 0.016 (0.027)
+[1mExtract: [ 290/2065][0m	Time 0.069 (0.077)	Data 0.020 (0.027)
+[1mExtract: [ 300/2065][0m	Time 0.063 (0.077)	Data 0.014 (0.026)
+[1mExtract: [ 310/2065][0m	Time 0.061 (0.076)	Data 0.012 (0.026)
+[1mExtract: [ 320/2065][0m	Time 0.082 (0.077)	Data 0.031 (0.026)
+[1mExtract: [ 330/2065][0m	Time 0.125 (0.077)	Data 0.073 (0.027)
+[1mExtract: [ 340/2065][0m	Time 0.073 (0.077)	Data 0.023 (0.026)
+[1mExtract: [ 350/2065][0m	Time 0.073 (0.076)	Data 0.023 (0.026)
+[1mExtract: [ 360/2065][0m	Time 0.063 (0.076)	Data 0.014 (0.026)
+[1mExtract: [ 370/2065][0m	Time 0.094 (0.076)	Data 0.042 (0.026)
+[1mExtract: [ 380/2065][0m	Time 0.135 (0.076)	Data 0.082 (0.026)
+[1mExtract: [ 390/2065][0m	Time 0.116 (0.077)	Data 0.063 (0.026)
+[1mExtract: [ 400/2065][0m	Time 0.104 (0.077)	Data 0.054 (0.026)
+[1mExtract: [ 410/2065][0m	Time 0.107 (0.077)	Data 0.059 (0.026)
+[1mExtract: [ 420/2065][0m	Time 0.099 (0.076)	Data 0.051 (0.026)
+[1mExtract: [ 430/2065][0m	Time 0.128 (0.077)	Data 0.076 (0.027)
+[1mExtract: [ 440/2065][0m	Time 0.096 (0.077)	Data 0.043 (0.027)
+[1mExtract: [ 450/2065][0m	Time 0.103 (0.077)	Data 0.051 (0.027)
+[1mExtract: [ 460/2065][0m	Time 0.092 (0.076)	Data 0.042 (0.026)
+[1mExtract: [ 470/2065][0m	Time 0.116 (0.077)	Data 0.064 (0.027)
+[1mExtract: [ 480/2065][0m	Time 0.101 (0.077)	Data 0.051 (0.027)
+[1mExtract: [ 490/2065][0m	Time 0.091 (0.076)	Data 0.041 (0.026)
+[1mExtract: [ 500/2065][0m	Time 0.089 (0.076)	Data 0.039 (0.026)
+[1mExtract: [ 510/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 520/2065][0m	Time 0.056 (0.076)	Data 0.007 (0.026)
+[1mExtract: [ 530/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 540/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 550/2065][0m	Time 0.068 (0.076)	Data 0.018 (0.026)
+[1mExtract: [ 560/2065][0m	Time 0.055 (0.076)	Data 0.007 (0.026)
+[1mExtract: [ 570/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 580/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 590/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 600/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 610/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 620/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 630/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 640/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 650/2065][0m	Time 0.095 (0.076)	Data 0.045 (0.026)
+[1mExtract: [ 660/2065][0m	Time 0.103 (0.076)	Data 0.050 (0.026)
+[1mExtract: [ 670/2065][0m	Time 0.107 (0.076)	Data 0.054 (0.026)
+[1mExtract: [ 680/2065][0m	Time 0.071 (0.076)	Data 0.021 (0.026)
+[1mExtract: [ 690/2065][0m	Time 0.112 (0.076)	Data 0.062 (0.026)
+[1mExtract: [ 700/2065][0m	Time 0.085 (0.076)	Data 0.033 (0.026)
+[1mExtract: [ 710/2065][0m	Time 0.095 (0.076)	Data 0.042 (0.026)
+[1mExtract: [ 720/2065][0m	Time 0.111 (0.076)	Data 0.058 (0.026)
+[1mExtract: [ 730/2065][0m	Time 0.095 (0.076)	Data 0.042 (0.026)
+[1mExtract: [ 740/2065][0m	Time 0.103 (0.076)	Data 0.051 (0.026)
+[1mExtract: [ 750/2065][0m	Time 0.101 (0.076)	Data 0.049 (0.026)
+[1mExtract: [ 760/2065][0m	Time 0.128 (0.076)	Data 0.076 (0.026)
+[1mExtract: [ 770/2065][0m	Time 0.094 (0.076)	Data 0.042 (0.026)
+[1mExtract: [ 780/2065][0m	Time 0.096 (0.076)	Data 0.043 (0.026)
+[1mExtract: [ 790/2065][0m	Time 0.109 (0.076)	Data 0.056 (0.026)
+[1mExtract: [ 800/2065][0m	Time 0.098 (0.076)	Data 0.045 (0.026)
+[1mExtract: [ 810/2065][0m	Time 0.093 (0.076)	Data 0.041 (0.026)
+[1mExtract: [ 820/2065][0m	Time 0.067 (0.076)	Data 0.015 (0.026)
+[1mExtract: [ 830/2065][0m	Time 0.080 (0.076)	Data 0.029 (0.026)
+[1mExtract: [ 840/2065][0m	Time 0.078 (0.076)	Data 0.024 (0.026)
+[1mExtract: [ 850/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 860/2065][0m	Time 0.090 (0.076)	Data 0.040 (0.025)
+[1mExtract: [ 870/2065][0m	Time 0.087 (0.076)	Data 0.033 (0.025)
+[1mExtract: [ 880/2065][0m	Time 0.072 (0.076)	Data 0.022 (0.025)
+[1mExtract: [ 890/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 900/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 910/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 920/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [ 930/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [ 940/2065][0m	Time 0.061 (0.076)	Data 0.013 (0.025)
+[1mExtract: [ 950/2065][0m	Time 0.048 (0.075)	Data 0.000 (0.025)
+[1mExtract: [ 960/2065][0m	Time 0.048 (0.075)	Data 0.000 (0.025)
+[1mExtract: [ 970/2065][0m	Time 0.048 (0.075)	Data 0.000 (0.025)
+[1mExtract: [ 980/2065][0m	Time 0.050 (0.075)	Data 0.000 (0.025)
+[1mExtract: [ 990/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1000/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1010/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1020/2065][0m	Time 0.050 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1030/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1040/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1050/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1060/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1070/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1080/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1090/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1100/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1110/2065][0m	Time 0.048 (0.075)	Data 0.000 (0.025)
+[1mExtract: [1120/2065][0m	Time 0.053 (0.075)	Data 0.005 (0.025)
+[1mExtract: [1130/2065][0m	Time 0.111 (0.076)	Data 0.060 (0.025)
+[1mExtract: [1140/2065][0m	Time 0.091 (0.076)	Data 0.039 (0.025)
+[1mExtract: [1150/2065][0m	Time 0.109 (0.076)	Data 0.057 (0.025)
+[1mExtract: [1160/2065][0m	Time 0.113 (0.076)	Data 0.064 (0.025)
+[1mExtract: [1170/2065][0m	Time 0.094 (0.076)	Data 0.045 (0.025)
+[1mExtract: [1180/2065][0m	Time 0.118 (0.076)	Data 0.070 (0.026)
+[1mExtract: [1190/2065][0m	Time 0.110 (0.076)	Data 0.057 (0.026)
+[1mExtract: [1200/2065][0m	Time 0.093 (0.076)	Data 0.040 (0.026)
+[1mExtract: [1210/2065][0m	Time 0.117 (0.076)	Data 0.063 (0.026)
+[1mExtract: [1220/2065][0m	Time 0.104 (0.076)	Data 0.053 (0.026)
+[1mExtract: [1230/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1240/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1250/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1260/2065][0m	Time 0.084 (0.076)	Data 0.032 (0.026)
+[1mExtract: [1270/2065][0m	Time 0.091 (0.076)	Data 0.038 (0.026)
+[1mExtract: [1280/2065][0m	Time 0.103 (0.076)	Data 0.050 (0.026)
+[1mExtract: [1290/2065][0m	Time 0.087 (0.076)	Data 0.034 (0.026)
+[1mExtract: [1300/2065][0m	Time 0.096 (0.076)	Data 0.042 (0.026)
+[1mExtract: [1310/2065][0m	Time 0.178 (0.076)	Data 0.129 (0.026)
+[1mExtract: [1320/2065][0m	Time 0.085 (0.076)	Data 0.033 (0.026)
+[1mExtract: [1330/2065][0m	Time 0.095 (0.076)	Data 0.044 (0.026)
+[1mExtract: [1340/2065][0m	Time 0.085 (0.076)	Data 0.033 (0.026)
+[1mExtract: [1350/2065][0m	Time 0.106 (0.076)	Data 0.054 (0.025)
+[1mExtract: [1360/2065][0m	Time 0.071 (0.076)	Data 0.021 (0.025)
+[1mExtract: [1370/2065][0m	Time 0.084 (0.076)	Data 0.032 (0.025)
+[1mExtract: [1380/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1390/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1400/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1410/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1420/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1430/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1440/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1450/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1460/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.025)
+[1mExtract: [1470/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1480/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1490/2065][0m	Time 0.054 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1500/2065][0m	Time 0.049 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1510/2065][0m	Time 0.048 (0.076)	Data 0.000 (0.026)
+[1mExtract: [1520/2065][0m	Time 0.050 (0.077)	Data 0.000 (0.027)
+[1mExtract: [1530/2065][0m	Time 0.051 (0.078)	Data 0.000 (0.027)
+[1mExtract: [1540/2065][0m	Time 0.051 (0.078)	Data 0.000 (0.028)
+[1mExtract: [1550/2065][0m	Time 0.052 (0.078)	Data 0.000 (0.028)
+[1mExtract: [1560/2065][0m	Time 0.085 (0.079)	Data 0.033 (0.028)
+[1mExtract: [1570/2065][0m	Time 0.085 (0.079)	Data 0.032 (0.028)
+[1mExtract: [1580/2065][0m	Time 0.055 (0.079)	Data 0.006 (0.028)
+[1mExtract: [1590/2065][0m	Time 0.074 (0.079)	Data 0.021 (0.028)
+[1mExtract: [1600/2065][0m	Time 0.087 (0.079)	Data 0.035 (0.028)
+[1mExtract: [1610/2065][0m	Time 0.106 (0.079)	Data 0.049 (0.028)
+[1mExtract: [1620/2065][0m	Time 0.090 (0.079)	Data 0.038 (0.028)
+[1mExtract: [1630/2065][0m	Time 0.095 (0.079)	Data 0.043 (0.028)
+[1mExtract: [1640/2065][0m	Time 0.102 (0.079)	Data 0.050 (0.028)
+[1mExtract: [1650/2065][0m	Time 0.127 (0.079)	Data 0.075 (0.028)
+[1mExtract: [1660/2065][0m	Time 0.091 (0.079)	Data 0.039 (0.028)
+[1mExtract: [1670/2065][0m	Time 0.078 (0.078)	Data 0.029 (0.028)
+[1mExtract: [1680/2065][0m	Time 0.061 (0.078)	Data 0.013 (0.028)
+[1mExtract: [1690/2065][0m	Time 0.103 (0.078)	Data 0.050 (0.028)
+[1mExtract: [1700/2065][0m	Time 0.099 (0.078)	Data 0.047 (0.028)
+[1mExtract: [1710/2065][0m	Time 0.069 (0.078)	Data 0.019 (0.028)
+[1mExtract: [1720/2065][0m	Time 0.048 (0.078)	Data 0.000 (0.028)
+[1mExtract: [1730/2065][0m	Time 0.055 (0.078)	Data 0.007 (0.028)
+[1mExtract: [1740/2065][0m	Time 0.099 (0.078)	Data 0.046 (0.028)
+[1mExtract: [1750/2065][0m	Time 0.096 (0.078)	Data 0.043 (0.028)
+[1mExtract: [1760/2065][0m	Time 0.096 (0.078)	Data 0.044 (0.028)
+[1mExtract: [1770/2065][0m	Time 0.134 (0.078)	Data 0.081 (0.028)
+[1mExtract: [1780/2065][0m	Time 0.085 (0.078)	Data 0.035 (0.028)
+[1mExtract: [1790/2065][0m	Time 0.090 (0.078)	Data 0.039 (0.028)
+[1mExtract: [1800/2065][0m	Time 0.091 (0.078)	Data 0.041 (0.028)
+[1mExtract: [1810/2065][0m	Time 0.095 (0.078)	Data 0.045 (0.028)
+[1mExtract: [1820/2065][0m	Time 0.090 (0.078)	Data 0.039 (0.028)
+[1mExtract: [1830/2065][0m	Time 0.088 (0.078)	Data 0.034 (0.028)
+[1mExtract: [1840/2065][0m	Time 0.078 (0.078)	Data 0.028 (0.028)
+[1mExtract: [1850/2065][0m	Time 0.114 (0.078)	Data 0.063 (0.028)
+[1mExtract: [1860/2065][0m	Time 0.093 (0.078)	Data 0.040 (0.028)
+[1mExtract: [1870/2065][0m	Time 0.087 (0.078)	Data 0.034 (0.028)
+[1mExtract: [1880/2065][0m	Time 0.109 (0.078)	Data 0.056 (0.028)
+[1mExtract: [1890/2065][0m	Time 0.100 (0.078)	Data 0.046 (0.028)
+[1mExtract: [1900/2065][0m	Time 0.088 (0.078)	Data 0.035 (0.028)
+[1mExtract: [1910/2065][0m	Time 0.108 (0.078)	Data 0.055 (0.027)
+[1mExtract: [1920/2065][0m	Time 0.097 (0.078)	Data 0.044 (0.027)
+[1mExtract: [1930/2065][0m	Time 0.093 (0.078)	Data 0.039 (0.027)
+[1mExtract: [1940/2065][0m	Time 0.095 (0.078)	Data 0.042 (0.027)
+[1mExtract: [1950/2065][0m	Time 0.098 (0.078)	Data 0.045 (0.027)
+[1mExtract: [1960/2065][0m	Time 0.103 (0.078)	Data 0.051 (0.027)
+[1mExtract: [1970/2065][0m	Time 0.102 (0.078)	Data 0.050 (0.027)
+[1mExtract: [1980/2065][0m	Time 0.079 (0.078)	Data 0.028 (0.027)
+[1mExtract: [1990/2065][0m	Time 0.074 (0.078)	Data 0.022 (0.027)
+[1mExtract: [2000/2065][0m	Time 0.105 (0.078)	Data 0.054 (0.027)
+[1mExtract: [2010/2065][0m	Time 0.108 (0.078)	Data 0.058 (0.027)
+[1mExtract: [2020/2065][0m	Time 0.104 (0.078)	Data 0.053 (0.027)
+[1mExtract: [2030/2065][0m	Time 0.112 (0.078)	Data 0.061 (0.027)
+[1mExtract: [2040/2065][0m	Time 0.093 (0.078)	Data 0.042 (0.027)
+[1mExtract: [2050/2065][0m	Time 0.112 (0.078)	Data 0.061 (0.027)
+[1mExtract: [2060/2065][0m	Time 0.104 (0.078)	Data 0.055 (0.027)
+appel build valdataloader
+enter filtrage for cuhk03np
+n_tasks : 5
+task_id : 4
+appel build valdataloader
+[1m=> Loaded val from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    153 |     1376 |         2
+  ----------------------------
+=> Loaded checkpoint 'logs/SpCL_test_4/model_best.pth'
+
+******************************* Start testing cuhk03-np *******************************
+
+[1mTest: [  0/106][0m	Time 0.349 (0.349)	Data 0.288 (0.288)
+[1mTest: [ 10/106][0m	Time 0.127 (0.113)	Data 0.074 (0.061)
+[1mTest: [ 20/106][0m	Time 0.149 (0.105)	Data 0.094 (0.054)
+[1mTest: [ 30/106][0m	Time 0.095 (0.096)	Data 0.044 (0.046)
+[1mTest: [ 40/106][0m	Time 0.176 (0.097)	Data 0.125 (0.046)
+[1mTest: [ 50/106][0m	Time 0.150 (0.096)	Data 0.097 (0.046)
+[1mTest: [ 60/106][0m	Time 0.161 (0.097)	Data 0.113 (0.047)
+[1mTest: [ 70/106][0m	Time 0.084 (0.098)	Data 0.036 (0.048)
+[1mTest: [ 80/106][0m	Time 0.119 (0.097)	Data 0.070 (0.047)
+[1mTest: [ 90/106][0m	Time 0.130 (0.097)	Data 0.080 (0.047)
+[1mTest: [100/106][0m	Time 0.112 (0.097)	Data 0.061 (0.048)
+
+
+Mean AP: 19.6%
+CMC Scores:
+  top-1          20.6%
+  top-5          34.4%
+  top-10         42.2%
+Testing time:  0:00:11.413387
+
+******************************* Finished testing *******************************
+
+
+************************* Start updating pseudo labels on epoch 8 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.1077511310577393
+[[0.0000000e+00 1.6787714e-01 1.7058164e-01 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ [1.6787714e-01 0.0000000e+00 1.7547828e-01 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ [1.7058164e-01 1.7547828e-01 5.9604645e-08 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ ...
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 0.0000000e+00
+  1.1360121e-01 0.0000000e+00]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 1.1360121e-01
+  0.0000000e+00 1.1360121e-01]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 0.0000000e+00
+  1.1360121e-01 0.0000000e+00]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 8: 95 clusters, 576 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    671 |     1498 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [8][  0/120][0m	Time 1.262 (1.262)	hybrid_memory 1.703 (1.703)	kd_loss 2.652 (2.652)	MMD_loss 0.406 (0.406)
+[1mEpoch: [8][ 10/120][0m	Time 0.572 (0.637)	hybrid_memory 2.176 (2.022)	kd_loss 3.138 (2.959)	MMD_loss 0.360 (0.372)
+[1mEpoch: [8][ 20/120][0m	Time 0.591 (0.613)	hybrid_memory 1.838 (1.958)	kd_loss 2.417 (2.861)	MMD_loss 0.373 (0.376)
+[1mEpoch: [8][ 30/120][0m	Time 1.124 (0.638)	hybrid_memory 1.020 (1.826)	kd_loss 2.779 (2.874)	MMD_loss 0.397 (0.374)
+[1mEpoch: [8][ 40/120][0m	Time 0.590 (0.627)	hybrid_memory 1.560 (1.754)	kd_loss 2.523 (2.846)	MMD_loss 0.359 (0.374)
+[1mEpoch: [8][ 50/120][0m	Time 0.593 (0.620)	hybrid_memory 1.561 (1.790)	kd_loss 3.300 (2.824)	MMD_loss 0.352 (0.373)
+[1mEpoch: [8][ 60/120][0m	Time 0.583 (0.626)	hybrid_memory 1.312 (1.745)	kd_loss 2.665 (2.811)	MMD_loss 0.374 (0.372)
+[1mEpoch: [8][ 70/120][0m	Time 0.597 (0.621)	hybrid_memory 2.031 (1.701)	kd_loss 2.829 (2.806)	MMD_loss 0.350 (0.373)
+[1mEpoch: [8][ 80/120][0m	Time 0.594 (0.618)	hybrid_memory 0.921 (1.632)	kd_loss 2.606 (2.781)	MMD_loss 0.354 (0.373)
+[1mEpoch: [8][ 90/120][0m	Time 0.597 (0.631)	hybrid_memory 0.975 (1.613)	kd_loss 2.367 (2.759)	MMD_loss 0.374 (0.373)
+[1mEpoch: [8][100/120][0m	Time 0.594 (0.627)	hybrid_memory 1.019 (1.578)	kd_loss 2.231 (2.728)	MMD_loss 0.397 (0.373)
+[1mEpoch: [8][110/120][0m	Time 0.593 (0.624)	hybrid_memory 1.261 (1.556)	kd_loss 3.068 (2.714)	MMD_loss 0.340 (0.374)
+
+************************* Start updating pseudo labels on epoch 9 *************************
+
+Computing jaccard distance...
+Jaccard distance computing time cost: 2.3329923152923584
+[[4.1723251e-07 2.3890358e-01 2.0493495e-01 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ [2.3890358e-01 0.0000000e+00 2.7610070e-01 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ [2.0493495e-01 2.7610070e-01 5.9604645e-08 ... 1.0000000e+00
+  1.0000000e+00 1.0000000e+00]
+ ...
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 0.0000000e+00
+  1.0659838e-01 2.6225764e-01]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 1.0659838e-01
+  0.0000000e+00 3.1301957e-01]
+ [1.0000000e+00 1.0000000e+00 1.0000000e+00 ... 2.6225764e-01
+  3.1301957e-01 0.0000000e+00]]
+adopt the reliability criterion for filtering clusters
+
+==> Statistics for cuhk03-np on epoch 9: 93 clusters, 452 un-clustered instances, 0 unused instances
+
+appel a build_train_dataloader
+[1m=> Loaded trainval from CUHK03NP[0m
+  ----------------------------
+  # ids | # images | # cameras
+  ----------------------------
+    545 |     1498 |         2
+  ----------------------------
+
+************************* Finished updating pseudo label *************************
+
+[1mEpoch: [9][  0/120][0m	Time 0.661 (0.661)	hybrid_memory 0.893 (0.893)	kd_loss 2.407 (2.407)	MMD_loss 0.355 (0.355)
+[1mEpoch: [9][ 10/120][0m	Time 0.576 (0.593)	hybrid_memory 1.760 (1.556)	kd_loss 2.446 (2.463)	MMD_loss 0.390 (0.375)
+[1mEpoch: [9][ 20/120][0m	Time 0.562 (0.581)	hybrid_memory 1.841 (1.567)	kd_loss 2.738 (2.600)	MMD_loss 0.376 (0.380)
+[1mEpoch: [9][ 30/120][0m	Time 0.571 (0.609)	hybrid_memory 1.405 (1.487)	kd_loss 2.311 (2.620)	MMD_loss 0.381 (0.382)
+[1mEpoch: [9][ 40/120][0m	Time 0.569 (0.603)	hybrid_memory 1.036 (1.504)	kd_loss 2.625 (2.655)	MMD_loss 0.379 (0.383)
+[1mEpoch: [9][ 50/120][0m	Time 0.565 (0.606)	hybrid_memory 1.416 (1.488)	kd_loss 2.678 (2.672)	MMD_loss 0.403 (0.384)
+[1mEpoch: [9][ 60/120][0m	Time 0.574 (0.608)	hybrid_memory 1.894 (1.476)	kd_loss 2.402 (2.655)	MMD_loss 0.396 (0.386)
+[1mEpoch: [9][ 70/120][0m	Time 0.573 (0.603)	hybrid_memory 1.291 (1.449)	kd_loss 2.634 (2.654)	MMD_loss 0.399 (0.387)
+[1mEpoch: [9][ 80/120][0m	Time 0.567 (0.611)	hybrid_memory 2.061 (1.460)	kd_loss 3.080 (2.659)	MMD_loss 0.379 (0.388)
+[1mEpoch: [9][ 90/120][0m	Time 0.599 (0.607)	hybrid_memory 2.670 (1.501)	kd_loss 2.233 (2.672)	MMD_loss 0.387 (0.388)
+[1mEpoch: [9][100/120][0m	Time 1.071 (0.608)	hybrid_memory 1.250 (1.519)	kd_loss 2.260 (2.683)	MMD_loss 0.393 (0.387)
+[1mEpoch: [9][110/120][0m	Time 0.569 (0.608)	hybrid_memory 2.035 (1.525)	kd_loss 2.749 (2.689)	MMD_loss 0.358 (0.387)
+
+************************* Start validating cuhk03-np on epoch 9 *************************n
+[1mVal: [ 0/22][0m	Time 0.271 (0.271)	Data 0.194 (0.194)
+[1mVal: [10/22][0m	Time 0.103 (0.087)	Data 0.049 (0.034)
+[1mVal: [20/22][0m	Time 0.098 (0.082)	Data 0.046 (0.030)
+
+
+Mean AP: 35.0%
+CMC Scores:
+  top-1          33.8%
+  top-5          56.2%
+  top-10         68.9%
+Validating time:  0:00:02.310684
+
+************************* Finished validating *************************
+
+val map : 0.35010361671447754
+in rank 0 val
+[92m
+ * Finished epoch   9  mAP: 35.0%  best: 35.0% *
+[0m
+=> Loaded checkpoint 'logs/SpCL_test_4/model_best.pth'
+
+******************************* Start testing cuhk03-np *******************************
+
+[1mTest: [  0/106][0m	Time 0.275 (0.275)	Data 0.211 (0.211)
+[1mTest: [ 10/106][0m	Time 0.091 (0.092)	Data 0.039 (0.040)
+[1mTest: [ 20/106][0m	Time 0.065 (0.086)	Data 0.015 (0.034)
+[1mTest: [ 30/106][0m	Time 0.052 (0.086)	Data 0.000 (0.033)
+[1mTest: [ 40/106][0m	Time 0.048 (0.080)	Data 0.000 (0.028)
+[1mTest: [ 50/106][0m	Time 0.047 (0.080)	Data 0.000 (0.029)
+[1mTest: [ 60/106][0m	Time 0.048 (0.081)	Data 0.000 (0.030)
+[1mTest: [ 70/106][0m	Time 0.048 (0.082)	Data 0.000 (0.031)
+[1mTest: [ 80/106][0m	Time 0.046 (0.082)	Data 0.000 (0.032)
+[1mTest: [ 90/106][0m	Time 0.046 (0.082)	Data 0.000 (0.032)
+[1mTest: [100/106][0m	Time 0.046 (0.082)	Data 0.000 (0.032)
+
+
+Mean AP: 20.4%
+CMC Scores:
+  top-1          21.0%
+  top-5          34.3%
+  top-10         42.8%
+Testing time:  0:00:10.091112
+
+******************************* Finished testing *******************************
+
+Total running time:  0:38:52.337885
+python scripts have finished
