@@ -10,14 +10,14 @@ In this work, we propose a new Source-guided Similarity Preservation (S2P) frame
 Our experiments show that S2P outperforms previous state-of-the-art methods on multiple real-to-real and synthetic-to-real challenging OUDA benchmarks.
 
 <p align="center">
-    <img src="OpenUnReID/docs/teaser.PNG" width="25%">
+    <img src="OpenUnReID/docs/teaser.PNG" width="70%">
 </p>
 
 For more details, please refer to our [paper](https://openaccess.thecvf.com/content/WACV2024/papers/Rami_Source-Guided_Similarity_Preservation_for_Online_Person_Re-Identification_WACV_2024_paper.pdf).
 
 # [Framework Architecture](#contents)
 <p align="center">
-    <img src="OpenUnReID/docs/framework.PNG" width="60%">
+    <img src="OpenUnReID/docs/framework.PNG" width="100%">
 </p>
 
 # [Updates](#contents)
