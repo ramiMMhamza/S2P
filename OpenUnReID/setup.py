@@ -113,7 +113,7 @@ def get_requirements(filename="requirements.txt"):
 if __name__ == "__main__":
     write_version_py()
     setup(
-        name="openunreid_ouda",
+        name="openunreid",
         version=get_version(),
         description="Unsupervised (Domain Adaptive) Object Re-ID Toolbox and Benchmark",
         long_description=readme(),

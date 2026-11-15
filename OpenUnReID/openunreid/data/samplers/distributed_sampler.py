@@ -1,4 +1,4 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
+# Written by Yixiao Ge
 
 import torch
 from torch.utils.data.sampler import Sampler

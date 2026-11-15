@@ -1,21 +1,17 @@
 # Credit to https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
-import torch
+
 import torch.nn as nn
-from torch.hub import load_state_dict_from_url, set_dir
-import os
+from torch.hub import load_state_dict_from_url
+
 from ...utils.torch_utils import copy_state_dict
-import os.path as osp
+
 __all__ = ["ResNet", "resnet18", "resnet34", "resnet50", "resnet101", "resnet152"]
 
-root = '../pretrained/'
-root = osp.abspath(osp.expanduser(root))
-resnet_dir = osp.join(root,'resnet')
-resnet50_dir = osp.join(resnet_dir,'resnet50-19c8e357.pth')
+
 model_urls = {
     "resnet18": "https://download.pytorch.org/models/resnet18-5c106cde.pth",
     "resnet34": "https://download.pytorch.org/models/resnet34-333f7ec4.pth",
-    "resnet50": "./data/ramih/Knowledge_Distilation/data/OpenUnReID/pretrained/resnet/resnet50-19c8e357.pth",
-    #"resnet50": "./pretrained/resnet/resnet50-19c8e357.pth",
+    "resnet50": "https://download.pytorch.org/models/resnet50-19c8e357.pth",
     "resnet101": "https://download.pytorch.org/models/resnet101-5d3b4d8f.pth",
     "resnet152": "https://download.pytorch.org/models/resnet152-b121ed2d.pth",
 }
@@ -281,13 +277,10 @@ class ResNet(nn.Module):
         return self._forward_impl(x)
 
 
-def _resnet(arch,backbone_path, block, layers, pretrained, progress, **kwargs):
+def _resnet(arch, block, layers, pretrained, progress, **kwargs):
     model = ResNet(block, layers, **kwargs)
     if pretrained:
-        #state_dict = load_state_dict_from_url(model_urls[arch], progress=progress)
-        state_dict = torch.load(backbone_path)#model_urls[arch]
-        #model.load_state_dict(state_dict)
-        #state_dict = remove_module_key(state_dict)      
+        state_dict = load_state_dict_from_url(model_urls[arch], progress=progress)
         copy_state_dict(state_dict, model)
 
     return model
@@ -315,7 +308,7 @@ def resnet34(pretrained=False, progress=True, **kwargs):
     return _resnet("resnet34", BasicBlock, [3, 4, 6, 3], pretrained, progress, **kwargs)
 
 
-def resnet50(backbone_path,pretrained=False, progress=True, **kwargs):
+def resnet50(pretrained=False, progress=True, **kwargs):
     r"""ResNet-50 model from
     `"Deep Residual Learning for Image Recognition"
     <https://arxiv.org/pdf/1512.03385.pdf>`_
@@ -323,7 +316,7 @@ def resnet50(backbone_path,pretrained=False, progress=True, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
     """
-    return _resnet("resnet50",backbone_path, Bottleneck, [3, 4, 6, 3], pretrained, progress, **kwargs)
+    return _resnet("resnet50", Bottleneck, [3, 4, 6, 3], pretrained, progress, **kwargs)
 
 
 def resnet101(pretrained=False, progress=True, **kwargs):
@@ -350,9 +343,3 @@ def resnet152(pretrained=False, progress=True, **kwargs):
     return _resnet(
         "resnet152", Bottleneck, [3, 8, 36, 3], pretrained, progress, **kwargs
     )
-
-def remove_module_key(state_dict):
-    for key in list(state_dict.keys()):
-        if 'module' in key:
-            state_dict[key.replace('module.','')] = state_dict.pop(key)
-    return state_dict

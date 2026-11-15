@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+build/
+dist/
+.eggs/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Cython-generated
+OpenUnReID/openunreid/core/metrics/rank_cylib/rank_cy.c
+OpenUnReID/openunreid/core/metrics/rank_cylib/*.html
+
+# Experiment outputs, data and weights
+/logs/
+/data/
+/datasets/
+/pretrained/
+*.pth
+*.pth.tar
+*.out
+*.err
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+*~

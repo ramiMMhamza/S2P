@@ -7,7 +7,7 @@ import torch.nn as nn
 from ..layers.domain_specific_bn import DSBN
 
 
-def convert_dsbn(model, num_domains=2, target_bn_idx=-1, kd_flag=False):
+def convert_dsbn(model, num_domains=2, target_bn_idx=-1):
     """
     convert all bn layers in the model to domain-specific bn layers
     """
@@ -25,7 +25,6 @@ def convert_dsbn(model, num_domains=2, target_bn_idx=-1, kd_flag=False):
                 target_bn_idx,
                 child.weight.requires_grad,
                 child.bias.requires_grad,
-                kd_flag=kd_flag,
             )
             m.to(next(child.parameters()).device)
 
@@ -45,7 +44,6 @@ def convert_dsbn(model, num_domains=2, target_bn_idx=-1, kd_flag=False):
                 target_bn_idx,
                 child.weight.requires_grad,
                 child.bias.requires_grad,
-                kd_flag=kd_flag,
             )
             m.to(next(child.parameters()).device)
 
@@ -56,7 +54,7 @@ def convert_dsbn(model, num_domains=2, target_bn_idx=-1, kd_flag=False):
 
         else:
             # recursive searching
-            convert_dsbn(child, num_domains=num_domains, target_bn_idx=target_bn_idx, kd_flag=kd_flag)
+            convert_dsbn(child, num_domains=num_domains, target_bn_idx=target_bn_idx)
 
 
 def convert_bn(model, target_bn_idx=-1):

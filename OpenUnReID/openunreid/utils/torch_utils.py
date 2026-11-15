@@ -25,13 +25,10 @@ def to_torch(ndarray):
     return ndarray
 
 
-def save_checkpoint(state, is_best,task_id, fpath="checkpoint.pth.tar",fpath_id = "checkpoint.pth.tar"):
+def save_checkpoint(state, is_best, fpath="checkpoint.pth.tar"):
     mkdir_if_missing(osp.dirname(fpath))
     torch.save(state, fpath)
-    # mkdir_if_missing(osp.dirname(fpath_id))
-    # torch.save(state, fpath_id)
     if is_best:
-        shutil.copy(fpath, osp.join(osp.dirname(fpath), str(task_id)+"model_best.pth"))
         shutil.copy(fpath, osp.join(osp.dirname(fpath), "model_best.pth"))
 
 
@@ -47,7 +44,6 @@ def load_checkpoint(fpath):
 
 def copy_state_dict(state_dict, model, strip=None):
     tgt_state = model.state_dict()
-    # print('tgt_state {}'.format(tgt_state))
     copied_names = set()
     unexpected_keys = set()
     for name, param in state_dict.items():

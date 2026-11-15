@@ -1,0 +1,158 @@
+# S2P on top of SpCL, MSMT17 (source) -> Market-1501 (online target stream).
+#
+# Paths are relative to the directory the training is launched from and can be
+# overridden on the command line (--data-root, --logs-root, --source-pretrained,
+# --backbone-path).
+
+METHOD: 'spcl'
+
+DATA_ROOT: './data/datasets/'
+LOGS_ROOT: './logs/'
+
+OUDA:
+  # the target identities are split into n_tasks disjoint subsets, seen in turn
+  n_tasks: 5
+
+S2P:
+  # distillation on the source support set: s2p (ours) | sp | at
+  kd: 's2p'
+  kd_weight: 0.1
+  # MMD between target features and source features of the mean network
+  mmd_weight: 0.1
+  # log the most / least similar (target, source) pairs to TensorBoard
+  log_images: False
+
+MODEL:
+  # architecture
+  backbone: 'resnet50'
+  # local ImageNet weights of the backbone; null = download with torch.hub
+  backbone_path: null
+  pooling: 'gem'
+  embed_feat: 0
+  dropout: 0.
+
+  dsbn: True
+
+  sync_bn: False
+  samples_per_bn: 16
+
+  # the mean network is the teacher of S2P
+  mean_net: True
+  alpha: 0.999
+
+  # pretraining
+  imagenet_pretrained: True
+  # REQUIRED: model trained on the source domain (OpenUnReID/tools/source_pretrain)
+  source_pretrained: null
+
+DATA:
+
+  height: 256
+  width: 128
+  norm_mean: [0.485, 0.456, 0.406]
+  norm_std: [0.229, 0.224, 0.225]
+
+  TRAIN:
+    # augmentation
+    is_autoaug: False
+
+    is_flip: True
+    flip_prob: 0.5
+
+    is_pad: True
+    pad_size: 10
+
+    is_blur: False
+    blur_prob: 0.5
+
+    is_erase: True
+    erase_prob: 0.5
+
+    # dual augmentation for MMT
+    is_mutual_transform: False
+    mutual_times: 2
+
+TRAIN:
+  seed: 1
+  deterministic: True
+  # mixed precision training for PyTorch>=1.6
+  amp: False
+
+  # {target: subset, source: subset}, in this order.
+  # datasets: market1501, dukemtmcreid, msmt17, cuhk03-np, custom_<directory>
+  datasets: {'market1501': 'trainval', 'msmt17': 'trainval'}
+  unsup_dataset_indexes: [0,]
+
+  # per task
+  epochs: 10
+  iters: 120
+
+  LOSS:
+    losses: {'hybrid_memory': 1.,}
+    temp: 0.05
+    momentum: 0.2
+
+  # validation on the (labelled) val split of the target: monitoring only,
+  # it is never used to select a model
+  val_dataset: 'market1501'
+  val_freq: 2
+
+  # sampler
+  SAMPLER:
+    num_instances: 4
+    is_shuffle: True
+
+  # data loader
+  LOADER:
+    samples_per_gpu: 16
+    workers_per_gpu: 2
+
+  # pseudo labels
+  PSEUDO_LABELS:
+    freq: 1 # epochs
+    use_outliers: True
+    norm_feat: True
+    norm_center: True
+
+    cluster: 'dbscan'
+    eps: [0.58, 0.6, 0.62]
+    min_samples: 4 # for dbscan
+    dist_metric: 'jaccard'
+    k1: 30 # for jaccard distance
+    k2: 6 # for jaccard distance
+    search_type: 0 # 0,1,2 for GPU, 3 for CPU (work for faiss)
+    cluster_num: null
+
+  # optim
+  OPTIM:
+    optim: 'adam'
+    lr: 0.00035
+    weight_decay: 0.0005
+
+  SCHEDULER:
+    # restarted at the beginning of every task
+    lr_scheduler: 'linear'
+    n_epochs_init: 2
+    n_epochs_decay: 10
+
+TEST:
+
+  # tested before adaptation and after every task
+  datasets: ['market1501',]
+
+  # data loader
+  LOADER:
+    samples_per_gpu: 32
+    workers_per_gpu: 2
+
+  # ranking setting
+  dist_metric: 'euclidean'
+  norm_feat: True
+  dist_cuda: True
+
+  # post processing
+  rerank: False
+  search_type: 0 # 0,1,2 for GPU, 3 for CPU (work for faiss)
+  k1: 20
+  k2: 6
+  lambda_value: 0.3

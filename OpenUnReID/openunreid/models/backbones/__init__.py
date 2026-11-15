@@ -25,7 +25,7 @@ def names():
     return sorted(__factory.keys())
 
 
-def build_bakcbone(name,backbone_path, pretrained=True, *args, **kwargs):
+def build_bakcbone(name, pretrained=True, *args, **kwargs):
     """
     Create a backbone model.
     Parameters
@@ -37,7 +37,4 @@ def build_bakcbone(name,backbone_path, pretrained=True, *args, **kwargs):
     """
     if name not in __factory:
         raise KeyError("Unknown backbone:", name)
-    if backbone_path=="":
-        return __factory[name](pretrained=pretrained, *args, **kwargs)
-    else:
-        return __factory[name](backbone_path,pretrained=pretrained, *args, **kwargs)
+    return __factory[name](pretrained=pretrained, *args, **kwargs)

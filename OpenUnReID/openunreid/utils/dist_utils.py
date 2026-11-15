@@ -60,7 +60,6 @@ def init_dist_pytorch(args, backend="nccl"):
         args.ngpus_per_node = torch.cuda.device_count()
     assert args.ngpus_per_node>0, "CUDA is not supported"
     args.gpu = args.rank
-    print("gpu {}".format(args.gpu))
     torch.cuda.set_device(args.gpu)
     dist.init_process_group(backend=backend)
     args.total_gpus = dist.get_world_size()

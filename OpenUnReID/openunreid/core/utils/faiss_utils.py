@@ -13,9 +13,9 @@ def swig_ptr_from_FloatTensor(x):
 def swig_ptr_from_LongTensor(x):
     assert x.is_contiguous()
     assert x.dtype == torch.int64, "dtype=%s" % x.dtype
-    return faiss.cast_integer_to_idx_t_ptr(
-        x.storage().data_ptr() + x.storage_offset() * 8
-    )
+    # S2P patch: faiss >= 1.7 renamed cast_integer_to_long_ptr
+    cast = getattr(faiss, "cast_integer_to_idx_t_ptr", None) or faiss.cast_integer_to_long_ptr
+    return cast(x.storage().data_ptr() + x.storage_offset() * 8)
 
 
 def search_index_pytorch(index, x, k, D=None, I=None):

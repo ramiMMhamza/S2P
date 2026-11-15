@@ -5,14 +5,12 @@ import copy
 import os.path as osp
 import tarfile
 import zipfile
-import numpy as np
-import torch 
 
 from ...utils import bcolors
 from ...utils.dist_utils import get_dist_info, synchronize
 from ...utils.file_utils import download_url, download_url_from_gd, mkdir_if_missing
 from ..utils.data_utils import read_image
-import torchvision.transforms as T
+
 
 class Dataset(object):
     """An abstract class representing a Dataset.
@@ -44,7 +42,6 @@ class Dataset(object):
 
     def __getitem__(self, index):
         raise NotImplementedError
-    
 
     def __len__(self):
         return len(self.data)
@@ -174,19 +171,11 @@ class ImageDataset(Dataset):
             return [self._get_single_item(index) for index in indices]
         return self._get_single_item(indices)
 
-    def _get_single_item(self, index,for_sim=False):
+    def _get_single_item(self, index):
         img_path, pid, camid = self.data[index]
         img = read_image(img_path)
         if self.transform is not None:
-            if not for_sim:
-                img = self.transform(img)
-            else:
-                res = []
-                #resize 
-                res.append(T.Resize((256, 128), interpolation=3))
-                #to tensor
-                res.append(T.ToTensor())
-                img= T.Compose(res)(img)
+            img = self.transform(img)
 
         return {
             "img": img,

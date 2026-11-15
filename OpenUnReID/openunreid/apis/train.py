@@ -1,5 +1,4 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
-# Modified to support OUDA
+# Written by Yixiao Ge
 
 import collections
 import random
@@ -25,9 +24,6 @@ def set_random_seed(seed, deterministic=False):
     torch.cuda.manual_seed_all(seed)
 
     if deterministic:
-        # torch.use_deterministic_algorithms(True)
-        # torch.set_deterministic(True)
-        torch.use_deterministic_algorithms(True)
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
@@ -52,8 +48,9 @@ def batch_processor_dist(data):
 
     imgs = collections.defaultdict(list)
     paths, ids, cids, inds = [], [], [], []
+
     for sub_data in data:
-        t=0
+
         if isinstance(sub_data["img"], list):
             for i, img in enumerate(sub_data["img"]):
                 imgs[i].append(img)

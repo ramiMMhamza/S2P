@@ -1,33 +1,31 @@
-# Written by Rami Hamza
+# Added for S2P (Hamza Rami). Not part of upstream OpenUnReID.
 
 import os.path as osp
-import warnings
+
 import pandas as pd
+
 from ..utils.base_dataset import ImageDataset
 
 
 class CustomDataset(ImageDataset):
-    """This class allows to load data from a csv file.
-    The csv file consists of the three following columns ["path", "id", "camid"] 
-    and must be named as list_mode.csv with mode = train, val, trainval, query, or gallery
+    """A re-ID dataset described by csv files (used for RandPerson in S2P).
+
+    Use it with the dataset name ``custom_<directory>``: the files are read
+    from ``<root>/<directory>/list_<mode>.csv`` with ``mode`` one of
+    ``train``, ``val``, ``trainval``, ``query`` or ``gallery``.
+
+    Each csv has the three columns ``path``, ``id`` and ``camid``. A relative
+    ``path`` is resolved against ``<root>/<directory>``.
     """
 
-    dataset_dir = "randperson_subset_train"
+    prefix = "custom_"
     dataset_url = None
 
-    def __init__(self, root, mode, filtre=None, del_labels=False, subdir="", **kwargs):
+    def __init__(self, root, mode, name, del_labels=False, **kwargs):
+        assert name.startswith(self.prefix) and len(name) > len(self.prefix)
         self.root = osp.abspath(osp.expanduser(root))
-        self.dataset_dir = osp.join(self.root, self.dataset_dir)
+        self.dataset_dir = osp.join(self.root, name[len(self.prefix):])
         self.del_labels = del_labels
-
-        dataset_dir = osp.join(self.dataset_dir, subdir)
-        if osp.isdir(dataset_dir):
-            self.dataset_dir = dataset_dir
-        else:
-            warnings.warn(
-                "The current data structure is deprecated. Please "
-                'put data folders such as "train" under {}'.format(subdir)
-            )
 
         subsets_cfgs = ["train", "val", "trainval", "query", "gallery"]
         if mode not in subsets_cfgs:
@@ -37,29 +35,18 @@ class CustomDataset(ImageDataset):
             )
 
         self.list_path = osp.join(self.dataset_dir, "list_" + mode + ".csv")
-        self.check_before_run([self.list_path])
+        self.check_before_run([self.dataset_dir, self.list_path])
 
-        data = self.process_dir(self.list_path, filtre=filtre)
-        self.__class__.__name__ = subdir
+        data = self.process_dir(self.list_path)
         super(CustomDataset, self).__init__(data, mode, **kwargs)
 
-    def process_dir(self, data_path, filtre=None):
-        df = pd.read_csv(data_path)
-        cols = ["path", "id", "camid"]
-        df["id"] = df["id"].astype(int)
-        df["camid"] = df["camid"].astype(int)
-        if isinstance(filtre,list):
-            if type(filtre[0])==type("test"):
-                print("enter filtration similarities for randperson using Rank1-NN")
-                df[df["path"].isin(filtre)]
-            else:
-                print("enter filtration similarities for randperson")
-                df[df["id"].isin(filtre)]
-        
-        if self.del_labels:
-            df["id"] = 0
-        # convert dataframe to the list of tuples
-        data = list(df[cols].itertuples(index=False, name=None))
-
+    def process_dir(self, list_path):
+        df = pd.read_csv(list_path)
+        data = []
+        for path, pid, camid in zip(df["path"], df["id"], df["camid"]):
+            path = str(path)
+            if not osp.isabs(path):
+                path = osp.join(self.dataset_dir, path)
+            # use 0 as labels for all images when labels are deleted
+            data.append((path, 0 if self.del_labels else int(pid), int(camid)))
         return data
-

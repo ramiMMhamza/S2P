@@ -1,5 +1,4 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
-# Modified to support OUDA and S2P
+# Written by Yixiao Ge
 
 import copy
 import warnings
@@ -30,9 +29,7 @@ class ReIDBaseModel(nn.Module):
     def __init__(
         self,
         arch,
-        backbone_path,
         num_classes,
-        classifiers_old,
         pooling="avg",
         embed_feat=0,
         dropout=0.0,
@@ -42,7 +39,7 @@ class ReIDBaseModel(nn.Module):
     ):
         super(ReIDBaseModel, self).__init__()
 
-        self.backbone = build_bakcbone(arch,backbone_path, pretrained=pretrained)
+        self.backbone = build_bakcbone(arch, pretrained=pretrained)
 
         self.global_pooling = build_pooling_layer(pooling)
         self.head = build_embedding_layer(
@@ -60,14 +57,7 @@ class ReIDBaseModel(nn.Module):
 
         if not pretrained:
             self.reset_params()
-        #initialize old classifiers and freeze them
-        self.KD = False
-        if len(classifiers_old)>0:
-            self.KD = True
-            self.classifiers_old = classifiers_old
-            for i in range(len(self.classifiers_old)):
-                for param in self.classifiers_old[i].parameters():
-                    param.requires_grad = False  # not update by gradient
+
     @torch.no_grad()
     def initialize_centers(self, centers, labels):
         if self.num_classes > 0:
@@ -80,17 +70,12 @@ class ReIDBaseModel(nn.Module):
                 f"the initialization does not function"
             )
 
-    def forward(self, x, return_featuremaps=False):
-        try:
-            batch_size = x.size(0)
-        except:
-            batch_size = 1
+    def forward(self, x):
+        batch_size = x.size(0)
         results = {}
 
         x = self.backbone(x)
-        results["activation"] = x
-        if return_featuremaps:
-            return x
+
         out = self.global_pooling(x)
         out = out.view(batch_size, -1)
 
@@ -162,20 +147,17 @@ class TeacherStudentNetwork(nn.Module):
 
         self.alpha = alpha
 
-    def forward(self, x, return_featuremaps=False):
+    def forward(self, x):
         if not self.training:
-            if not return_featuremaps:
-                return self.mean_net(x)
+            return self.mean_net(x)
 
-        results = self.net(x, return_featuremaps)
+        results = self.net(x)
 
         with torch.no_grad():
             self._update_mean_net()  # update mean net
             results_m = self.mean_net(x)
-        if return_featuremaps:
-            return results
-        else:
-            return results, results_m
+
+        return results, results_m
 
     @torch.no_grad()
     def initialize_centers(self, centers, labels):
@@ -189,7 +171,7 @@ class TeacherStudentNetwork(nn.Module):
 
 
 def build_model(
-    cfg, num_classes,classifiers_old, init=None, kd_flag = False
+    cfg, num_classes, init=None,
 ):
     """
     Build a (cross-domain) re-ID model
@@ -199,9 +181,7 @@ def build_model(
     # construct a reid model
     model = ReIDBaseModel(
         cfg.MODEL.backbone,
-        cfg.MODEL.backbone_path,
         num_classes,
-        classifiers_old,
         cfg.MODEL.pooling,
         cfg.MODEL.embed_feat,
         cfg.MODEL.dropout,
@@ -213,8 +193,6 @@ def build_model(
         state_dict = load_checkpoint(init)
         if "state_dict" in state_dict.keys():
             state_dict = state_dict["state_dict"]
-        elif "state_dict_1" in state_dict.keys():
-            state_dict = state_dict["state_dict_1"]
         copy_state_dict(state_dict, model, strip="module.")
 
     # convert to domain-specific bn (optional)
@@ -232,7 +210,7 @@ def build_model(
                 f"{list(cfg.TRAIN.datasets.keys())[-1]}'s BN intead, "
                 f"which may cause unsatisfied performance."
             )
-        convert_dsbn(model, num_domains, target_domain_idx, kd_flag=kd_flag)
+        convert_dsbn(model, num_domains, target_domain_idx)
     else:
         if cfg.MODEL.dsbn:
             warnings.warn(
@@ -294,14 +272,14 @@ def build_gan_model(
 
     if only_generator:
         # for inference
-        model['G'] = build_bakcbone(cfg.MODEL.generator, "")
+        model['G'] = build_bakcbone(cfg.MODEL.generator)
     else:
         # construct generators
-        model['G_A'] = build_bakcbone(cfg.MODEL.generator, "")
-        model['G_B'] = build_bakcbone(cfg.MODEL.generator, "")
+        model['G_A'] = build_bakcbone(cfg.MODEL.generator)
+        model['G_B'] = build_bakcbone(cfg.MODEL.generator)
         # construct discriminators
-        model['D_A'] = build_bakcbone(cfg.MODEL.discriminator, "")
-        model['D_B'] = build_bakcbone(cfg.MODEL.discriminator, "")
+        model['D_A'] = build_bakcbone(cfg.MODEL.discriminator)
+        model['D_B'] = build_bakcbone(cfg.MODEL.discriminator)
         # construct a metric net for spgan
         if cfg.MODEL.spgan:
             model['Metric'] = build_bakcbone('metricnet')

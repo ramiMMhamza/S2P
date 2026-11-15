@@ -1,4 +1,5 @@
-from .cuhk03np import CUHK03NP
+from .cuhk03np import CUHK03NP  # S2P patch
+from .custom_reid import CustomDataset  # S2P patch
 from .dukemtmcreid import DukeMTMCreID
 from .market1501 import Market1501
 from .msmt17 import MSMT17
@@ -6,14 +7,11 @@ from .personx import PersonX
 from .vehicleid import VehicleID
 from .vehiclex import VehicleX
 from .veri import VeRi
-from .cuhk03 import CUHK03
-from .custom_reid import CustomDataset
+
 __all__ = ["build_dataset", "names"]
 
 __factory = {
-    "custom": CustomDataset,
-    "cuhk03-np": CUHK03NP,
-    "cuhk03": CUHK03,
+    "cuhk03-np": CUHK03NP,  # S2P patch
     "market1501": Market1501,
     "dukemtmcreid": DukeMTMCreID,
     "msmt17": MSMT17,
@@ -28,7 +26,7 @@ def names():
     return sorted(__factory.keys())
 
 
-def build_dataset(name, root, mode, n_tasks, task_id,filtre, *args, **kwargs):
+def build_dataset(name, root, mode, *args, **kwargs):
     """
     Create a dataset instance.
     Parameters
@@ -47,10 +45,8 @@ def build_dataset(name, root, mode, n_tasks, task_id,filtre, *args, **kwargs):
     transform : optional
         The transform for dataloader. Default: None
     """
-    if "custom_" == name[:7]:
-        data_name = name[7:]
-        print("Loading", data_name, "dataset")
-        return __factory["custom"](root, mode, filtre, *args, subdir="", **kwargs)
-    elif name not in __factory:
+    if name.startswith(CustomDataset.prefix):  # S2P patch: csv-described datasets
+        return CustomDataset(root, mode, *args, name=name, **kwargs)
+    if name not in __factory:
         raise KeyError("Unknown dataset:", name)
-    return __factory[name](root, mode, n_tasks, task_id,filtre, *args, **kwargs)
+    return __factory[name](root, mode, *args, **kwargs)
