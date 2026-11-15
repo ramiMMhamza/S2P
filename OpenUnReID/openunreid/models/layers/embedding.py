@@ -1,5 +1,4 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
-# Modified to support OUDA
+# Written by Yixiao Ge
 
 import torch.nn as nn
 from torch.nn import init

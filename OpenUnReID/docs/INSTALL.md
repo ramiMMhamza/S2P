@@ -10,25 +10,26 @@
 We have tested the following versions of OS and softwares:
 
 + OS: Ubuntu 16.04
-+ Python: 3.7/3.10
-+ PyTorch: 1.13
-+ CUDA: 11.0
++ Python: 3.6/3.7
++ PyTorch: 1.1/1.5/1.6
++ CUDA: 9.0/11.0
 
 ### Install OpenUnReID
 
 **a.** Create a conda virtual environment and activate it.
 ```shell
-conda create -n open-mmlab python=3.10 -y
+conda create -n open-mmlab python=3.7 -y
 conda activate open-mmlab
 ```
 
 **b.** Install PyTorch and torchvision following the [official instructions](https://pytorch.org/), e.g.,
 ```shell
-conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.7 -c pytorch -c nvidia
+conda install pytorch torchvision -c pytorch
 ```
 
-**c.** CD to OpenUnReID repository.
+**c.** Clone the this repository.
 ```shell
+git clone https://github.com/open-mmlab/OpenUnReID.git
 cd OpenUnReID
 ```
 

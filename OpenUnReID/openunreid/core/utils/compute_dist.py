@@ -1,4 +1,4 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
+# Written by Yixiao Ge
 
 import time
 
@@ -193,7 +193,6 @@ def compute_jaccard_distance(
     jaccard_dist[pos_bool] = 0.0
     if verbose:
         print("Jaccard distance computing time cost: {}".format(time.time() - end))
-        print(jaccard_dist)
 
     return jaccard_dist
 

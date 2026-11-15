@@ -1,4 +1,4 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
+# Written by Yixiao Ge
 
 from ..utils.dataset_wrapper import JointDataset
 from .distributed_identity_sampler import (

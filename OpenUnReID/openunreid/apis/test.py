@@ -1,13 +1,11 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
-# Modified to plot the activation maps
-from torch.utils.tensorboard import SummaryWriter
+# Written by Yixiao Ge
+
 import os
 import os.path as osp
 import time
 import warnings
 from datetime import timedelta
 
-import cv2
 import numpy as np
 import torch
 import torchvision
@@ -24,16 +22,11 @@ from ..utils.meters import Meters
 
 # # Deprecated
 # from ..core.utils.rerank import re_ranking_cpu
-GRID_SPACING = 10
-QUERY_EXTRA_SPACING = 90
-BW = 5 # border width
-GREEN = (0, 255, 0)
-RED = (0, 0, 255)
 
 
 @torch.no_grad()
 def test_reid(
-    cfg, model, data_loader, query, gallery, dataset_name=None, rank=None, visrankactiv=False, **kwargs
+    cfg, model, data_loader, query, gallery, dataset_name=None, rank=None, **kwargs
 ):
 
     start_time = time.monotonic()
@@ -66,36 +59,23 @@ def test_reid(
     g_cids = np.array([cid for _, _, cid in gallery])
 
     # extract features with the given model
-    if visrankactiv:
-        features, activations = extract_features(
-            model,
-            data_loader,
-            query + gallery,
-            normalize=cfg.TEST.norm_feat,
-            with_path=False,
-            prefix="Test: ",
-            visrankactiv=visrankactiv,
-            **kwargs,
-        )
-    else:
-        features = extract_features(
-            model,
-            data_loader,
-            query + gallery,
-            normalize=cfg.TEST.norm_feat,
-            with_path=False,
-            prefix="Test: ",
-            **kwargs,
-        )
+    features = extract_features(
+        model,
+        data_loader,
+        query + gallery,
+        normalize=cfg.TEST.norm_feat,
+        with_path=False,
+        # one_gpu = one_gpu,
+        prefix="Test: ",
+        **kwargs,
+    )
+
     if rank == 0:
         # split query and gallery features
         assert features.size(0) == len(query) + len(gallery)
         query_features = features[: len(query)]
         gallery_features = features[len(query) :]
-        if visrankactiv:
-            # Split query and gallery activations
-            qa = activations[: len(query)]
-            ga = activations[len(query) :]
+
         # evaluate with original distance
         dist = build_dist(cfg.TEST, query_features, gallery_features)
         cmc, map = evaluate_rank(dist, q_pids, g_pids, q_cids, g_cids)
@@ -125,22 +105,7 @@ def test_reid(
     end_time = time.monotonic()
     print("Testing time: ", timedelta(seconds=end_time - start_time))
     print(f"\n{sep} Finished testing {sep}\n")
-    if cfg.exec==0:
-        save_dir = osp.join(cfg.work_dir, 'visrankactiv_'+str(cfg.task_id)+'_'+dataset_name)
-    else:
-        save_dir = '/out/visrankactiv_'+str(cfg.task_id)+'_'+dataset_name
-    if visrankactiv and rank==0:
-            visualize_ranked_activation_results(
-                dist,
-                qa,
-                ga,
-                (query,gallery),
-                "image",
-                width=128,
-                height=256,
-                save_dir= save_dir,
-                topk=10
-            )
+
     return cmc, map
 
 
@@ -180,11 +145,12 @@ def val_reid(
         cmc, map = evaluate_rank(dist, pids, pids, cids, cids)
     else:
         cmc, map = np.empty(50), 0.0
+
     end_time = time.monotonic()
     print("Validating time: ", timedelta(seconds=end_time - start_time))
     print(f"\n{sep} Finished validating {sep}\n")
 
-    return cmc, map, features, pids
+    return cmc, map
 
 
 @torch.no_grad()
@@ -241,100 +207,3 @@ def infer_gan(
     print(f"\n{sep} Finished translating {sep}\n")
 
     return
-
-
-def visualize_ranked_activation_results(distmat, query_act, gallery_act, dataset, data_type, width=128, height=256, save_dir='', topk=10):
-    """Visualizes ranked results with activation maps.
-
-    Supports only image-reid.
-
-    Args:
-        distmat (numpy.ndarray): distance matrix of shape (num_query, num_gallery).
-        query_act (torch tensor): activations for query (num_query)
-        gallery_act (torch tensor): activations for gallery (num_gallery)
-        dataset (tuple): a 2-tuple containing (query, gallery), each of which contains
-            tuples of (img_path(s), pid, camid).
-        data_type (str): "image" or "video".
-        width (int, optional): resized image width. Default is 128.
-        height (int, optional): resized image height. Default is 256.
-        save_dir (str): directory to save output images.
-        topk (int, optional): denoting top-k images in the rank list to be visualized.
-            Default is 10.
-    """
-    if data_type != 'image':
-        raise KeyError("Unsupported data type: {}".format(data_type))
-    num_q, num_g = distmat.shape
-    mkdir_if_missing(save_dir)
-
-    print('# query: {}\n# gallery {}'.format(num_q, num_g))
-    print('Visualizing top-{} ranks ...'.format(topk))
-    
-    query, gallery = dataset
-    assert num_q == len(query)
-    assert num_g == len(gallery)
-    
-    indices = np.argsort(distmat, axis=1)
-
-    for q_idx in range(num_q):
-        qimg_path, qpid, qcamid = query[q_idx]
-        qimg_path_name = qimg_path[0] if isinstance(qimg_path, (tuple, list)) else qimg_path
-
-        if data_type == 'image':
-            qimg = cv2.imread(qimg_path)
-            qimg = cv2.resize(qimg, (width, height))
-            qimg = cv2.copyMakeBorder(qimg, BW, BW, BW, BW, cv2.BORDER_CONSTANT, value=(0, 0, 0))
-            # resize twice to ensure that the border width is consistent across images
-            qimg = cv2.resize(qimg, (width, height))
-            num_cols = topk + 1
-            grid_img = 255 * np.ones((2*height+10, num_cols*width+topk*GRID_SPACING+QUERY_EXTRA_SPACING, 3), dtype=np.uint8)
-
-            qact = query_act[q_idx].numpy()
-            qact = np.uint8(np.floor(qact))
-            qact = cv2.applyColorMap(qact, cv2.COLORMAP_JET)
-            overlapped = qimg * 0.5 + qact * 0.5
-            overlapped[overlapped>255] = 255
-            overlapped = overlapped.astype(np.uint8)
-            grid_img[:height, :width, :] = qimg
-            grid_img[height+10:, :width, :] = overlapped
-        else:
-            pass
-
-        rank_idx = 1
-        for g_idx in indices[q_idx,:]:
-            gimg_path, gpid, gcamid = gallery[g_idx]
-            invalid = (qpid == gpid) & (qcamid == gcamid)
-
-            if not invalid:
-                matched = gpid==qpid
-                if data_type == 'image':
-                    border_color = GREEN if matched else RED
-                    gimg = cv2.imread(gimg_path)
-                    gimg = cv2.resize(gimg, (width, height))
-                    gimg = cv2.copyMakeBorder(gimg, BW, BW, BW, BW, cv2.BORDER_CONSTANT, value=border_color)
-                    gimg = cv2.resize(gimg, (width, height))
-                    start = rank_idx*width + rank_idx*GRID_SPACING + QUERY_EXTRA_SPACING
-                    end = (rank_idx+1)*width + rank_idx*GRID_SPACING + QUERY_EXTRA_SPACING
-
-                    gact = gallery_act[g_idx].numpy()
-                    gact = np.uint8(np.floor(gact))
-                    gact = cv2.applyColorMap(gact, cv2.COLORMAP_JET)
-                    overlapped = gimg * 0.5 + gact * 0.5
-                    overlapped[overlapped>255] = 255
-                    overlapped = overlapped.astype(np.uint8)
-                    grid_img[:height, start: end, :] = gimg
-                    grid_img[height+10:, start: end, :] = overlapped
-                else:
-                    pass
-
-                rank_idx += 1
-                if rank_idx > topk:
-                    break
-
-        if data_type == 'image':
-            imname = osp.basename(osp.splitext(qimg_path_name)[0])
-            cv2.imwrite(osp.join(save_dir, imname+'.jpg'), grid_img)
-
-        if (q_idx+1) % 100 == 0:
-            print('- done {}/{}'.format(q_idx+1, num_q))
-
-    print('Done. Images have been saved to "{}" ...'.format(save_dir))

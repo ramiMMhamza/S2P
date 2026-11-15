@@ -1,5 +1,4 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
-# Modified to support OUDA
+# Written by Zhiwei Zhang
 
 import os.path as osp
 import warnings
@@ -25,13 +24,11 @@ class MSMT17(ImageDataset):
     dataset_dir = "msmt17"
     dataset_url = None
 
-    def __init__(self, root, mode, n_tasks, task_id, filtre , del_labels=False, **kwargs):
+    def __init__(self, root, mode, del_labels=False, **kwargs):
         self.root = osp.abspath(osp.expanduser(root))
-        self.n_tasks = n_tasks
-        self.task_id = task_id
         self.dataset_dir = osp.join(self.root, self.dataset_dir)
         self.del_labels = del_labels
-        # self.download_dataset(self.dataset_dir, self.dataset_url)
+        self.download_dataset(self.dataset_dir, self.dataset_url)
 
         # allow alternative directory structure
         dataset_dir = osp.join(self.dataset_dir, "MSMT17_V1")
@@ -72,32 +69,13 @@ class MSMT17(ImageDataset):
         required_files = [cfgs[0], cfgs[1]]
         self.check_before_run(required_files)
 
-        data = self.process_dir(mode, filtre, *cfgs)
+        data = self.process_dir(*cfgs)
         super(MSMT17, self).__init__(data, mode, **kwargs)
 
-    def process_dir(self, mode, filtre, dir_path, list_path):
+    def process_dir(self, dir_path, list_path):
         with open(list_path, "r") as txt:
             lines = txt.readlines()
-        # get all identities
-        if type(filtre)==type(True):
-            mode_selection='id'
-        elif type(filtre[0])==type("test"):
-            mode_selection='path'
-        else:
-            mode_selection='id'
-        pid_container = set()
-        for img_info in lines:
-            img_path, pid = img_info.split(" ")
-            pid = int(pid)  # no need to relabel
-            if mode == 'trainval' and filtre==True:
-                if pid%self.n_tasks==self.task_id:
-                    pid_container.add(pid)
-            elif mode == 'trainval' and isinstance(filtre,list) and mode_selection=='id':
-                if pid in filtre:
-                    pid_container.add(pid)
-            else:
-                pid_container.add(pid)
-        pid_container = sorted(pid_container)
+
         data = []
 
         for img_info in lines:
@@ -105,17 +83,11 @@ class MSMT17(ImageDataset):
             pid = int(pid)  # no need to relabel
             camid = int(img_path.split("_")[2]) - 1  # index starts from 0
             img_path = osp.join(dir_path, img_path)
-            if pid in pid_container:
-                if (not self.del_labels) and (mode_selection=="path"):
-                    if img_path in filtre:
-                        data.append((img_path, pid, camid))
-                elif not self.del_labels:
-                    data.append((img_path, pid, camid))
-                else:
-                    # use 0 as labels for all images
-                    data.append((img_path, 0, camid))
+            if not self.del_labels:
+                data.append((img_path, pid, camid))
             else:
-                continue
+                # use 0 as labels for all images
+                data.append((img_path, 0, camid))
 
         return data
 

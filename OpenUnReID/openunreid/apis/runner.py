@@ -1,15 +1,11 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
-
-from torch.utils.tensorboard import SummaryWriter
-from torchvision.transforms import ToTensor
-
+# Written by Yixiao Ge
 
 import collections
 import os.path as osp
 import time
 import warnings
-import numpy as np
-import torch, torchvision
+
+import torch
 import torch.nn as nn
 from torch.nn.parallel import DataParallel, DistributedDataParallel
 try:
@@ -21,7 +17,7 @@ except:
 
 from ..core.label_generators import LabelGenerator
 from ..core.metrics.accuracy import accuracy
-from ..data import build_train_dataloader, build_val_dataloader, build_test_dataloader
+from ..data import build_train_dataloader, build_val_dataloader
 from ..data.utils.data_utils import save_image
 from ..utils import bcolors
 from ..utils.dist_utils import get_dist_info, synchronize
@@ -30,54 +26,9 @@ from ..utils.image_pool import ImagePool
 from ..utils.torch_utils import copy_state_dict, load_checkpoint, save_checkpoint
 from ..utils.file_utils import mkdir_if_missing
 from ..utils.torch_utils import tensor2im
-from .test import val_reid, test_reid
+from .test import val_reid
 from .train import batch_processor, set_random_seed
-from sklearn import metrics
-from sklearn import manifold
-import matplotlib.pyplot as plt
-import io
-import PIL.Image
-import copy
-def purity_score(y_true, y_pred):
-    # compute contingency matrix (also called confusion matrix)
-    contingency_matrix = metrics.cluster.contingency_matrix(y_true, y_pred)
-    # return purity
-    return np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix) 
 
-def gen_plot(Y,Y_source,color,color_source,true_color):
-    """Create a pyplot plot and save to buffer."""
-    true_color=np.array(true_color)
-    fig, axes = plt.subplots(nrows=1, ncols=4, figsize=(15, 8))
-    cmap = plt.cm.get_cmap('jet')
-    unique_colors = np.unique(np.array(color))
-    axes[0].set_title("pseudo labels")
-    axes[2].set_title("true labels")
-    axes[3].set_title("pseudo labels & source labels")
-    axes[1].set_title("source labels")
-    for i,color_ in enumerate(unique_colors):
-        indices = np.where(np.array(color)==color_)
-        Y_ = np.array(Y)[indices[0]]
-        axes[0].scatter(Y_[:, 0], Y_[:, 1], c=cmap(i/len(unique_colors)), label=color_,s=2)
-        axes[3].scatter(Y_[:, 0], Y_[:, 1], c=cmap(i/len(unique_colors)), label=color_,s=2)
-        print(np.mean(Y_[:, 0]),Y_[:, 0].shape)
-    unique_source_color = np.unique(np.array(color_source))
-    print(unique_source_color)
-    for j,color_ in enumerate(unique_source_color):
-        indices = np.where(np.array(color_source)==color_)
-        Y_ = np.array(Y_source)[indices[0]]
-        axes[1].scatter(Y_[:, 0], Y_[:, 1], c=cmap(j/len(unique_source_color)), label=color_,s=2)
-        axes[3].scatter(Y_[:, 0], Y_[:, 1], color='red', label=color_,s=2)
-    unique_true_colors = np.unique(true_color)
-    for i,color_ in enumerate(unique_true_colors):
-        indices = np.where(np.array(true_color)==color_)
-        Y_ = np.array(Y)[indices[0]]
-        axes[2].scatter(Y_[:, 0], Y_[:, 1], c=cmap(i/len(unique_true_colors)), label=color_,s=2)
-        print(np.mean(Y_[:, 0]),Y_[:, 0].shape)
-    
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    return buf
 
 class BaseRunner(object):
     """
@@ -91,10 +42,7 @@ class BaseRunner(object):
         optimizer,
         criterions,
         train_loader,
-        writer,
-        train_loader_similarities=None,
         train_sets=None,
-        train_sets_similarities=None,
         lr_scheduler=None,
         meter_formats=None,
         print_freq=10,
@@ -102,6 +50,7 @@ class BaseRunner(object):
         label_generator=None,
     ):
         super(BaseRunner, self).__init__()
+        # set_random_seed(cfg.TRAIN.seed, cfg.TRAIN.deterministic)
 
         if meter_formats is None:
             meter_formats = {"Time": ":.3f", "Acc@1": ":.2%"}
@@ -121,21 +70,17 @@ class BaseRunner(object):
         )
         if self.is_pseudo:
             if self.label_generator is None:
-                self.label_generator = LabelGenerator(self.cfg, self.model) 
+                self.label_generator = LabelGenerator(self.cfg, self.model)
 
         self._rank, self._world_size, self._is_dist = get_dist_info()
         self._epoch, self._start_epoch = 0, 0
-        self._best_mAP = 0.0
-        self.losses = []
-        self.accs = []
-        self.writer = writer
+        self._best_mAP = 0
+
         # build data loaders
         self.train_loader, self.train_sets = train_loader, train_sets
-        self.train_loader_similarities, self.train_sets_similarities = train_loader_similarities, train_sets_similarities
-
         if "val_dataset" in self.cfg.TRAIN:
             self.val_loader, self.val_set = build_val_dataloader(cfg)
-        
+
         # save training variables
         for key in criterions.keys():
             meter_formats[key] = ":.3f"
@@ -158,12 +103,12 @@ class BaseRunner(object):
                 self.scaler = None
         else:
             self.scaler = None
-        
-        self.y_true =  [[]]
+
     def run(self):
         # the whole process for training
         for ep in range(self._start_epoch, self.cfg.TRAIN.epochs):
             self._epoch = ep
+
             # generate pseudo labels
             if self.is_pseudo:
                 if (
@@ -172,12 +117,12 @@ class BaseRunner(object):
                 ):
                     self.update_labels()
                     synchronize()
+
             # train
             self.train()
             synchronize()
 
             # validate
-            
             if (ep + 1) % self.cfg.TRAIN.val_freq == 0 or (
                 ep + 1
             ) == self.cfg.TRAIN.epochs:
@@ -200,53 +145,19 @@ class BaseRunner(object):
 
             # synchronize distributed processes
             synchronize()
-        
-            
 
     def update_labels(self):
         sep = "*************************"
         print(f"\n{sep} Start updating pseudo labels on epoch {self._epoch} {sep}\n")
+
         # generate pseudo labels
-        pseudo_labels, label_centers,_, _ = self.label_generator(
+        pseudo_labels, label_centers = self.label_generator(
             self._epoch, print_freq=self.print_freq
         )
-        data_loaders, datasets = self.label_generator.data_loaders,self.label_generator.datasets
-
-        tsne = False
-        if tsne:
-            tsne = manifold.TSNE(n_components=2, init='pca',
-                                         random_state=0)
-
-            features = tsne.fit_transform(torch.cat((all_features,all_features_source),0))
-            Y = features[:len(all_features)]
-            Y_source = features[len(all_features):]
-            plot = gen_plot(Y,Y_source,pseudo_labels[0],list_clusters,self.y_true[int(self.cfg.task_id)])
-            image = PIL.Image.open(plot)
-            image = ToTensor()(image)
-        #plot images of the clusters
-        array_pseudo_labels = np.array(pseudo_labels[0])
-        mapping = {}
-        for i in np.unique(array_pseudo_labels):
-            mapping[i] = np.where(array_pseudo_labels == i)[0]  
-        for key in mapping.keys():
-            images_to_show = []
-            for n,index in enumerate(mapping[key]):
-                try:
-                    image = self.train_sets[0]._get_single_item(index,for_sim=True)["img"]
-                    images_to_show.append(image)
-                except:
-                    pass
-                if n >20:
-                    break
-            try:
-                images_to_show = torchvision.utils.make_grid(images_to_show)
-            except:
-                pass
-
 
         # update train loader
         self.train_loader, self.train_sets = build_train_dataloader(
-            self.cfg,None,None,False, pseudo_labels, self.train_sets, self._epoch,
+            self.cfg, pseudo_labels, self.train_sets, self._epoch,
         )
 
         # update criterions
@@ -299,37 +210,22 @@ class BaseRunner(object):
                 loader.new_epoch(self._epoch)
         else:
             self.train_loader.new_epoch(self._epoch)
-        
-        if self.train_loader_similarities is not None:
-            if isinstance(self.train_loader_similarities, list):
-                for loader in self.train_loader_similarities:
-                    loader.new_epoch(self._epoch)
-            else:
-                self.train_loader_similarities.new_epoch(self._epoch)
-
 
         end = time.time()
         for iter in range(self.cfg.TRAIN.iters):
+
             if isinstance(self.train_loader, list):
                 batch = [loader.next() for loader in self.train_loader]
             else:
                 batch = self.train_loader.next()
-            if self.train_loader_similarities is not None:
-                if isinstance(self.train_loader_similarities, list):
-                    batch_similarities = [loader.next() for loader in self.train_loader_similarities]
-                else:
-                    batch_similarities = self.train_loader_similarities.next()
+            # self.train_progress.update({'Data': time.time()-end})
 
             if self.scaler is None:
-                with torch.autograd.set_detect_anomaly(True):
-                    if self.train_loader_similarities is None:
-                        loss = self.train_step(iter, batch)
-                    else:
-                        loss = self.train_step(iter, batch, batch_similarities)
-                    if (loss > 0):
-                        self.optimizer.zero_grad()
-                        loss.backward()
-                        self.optimizer.step()
+                loss = self.train_step(iter, batch)
+                if (loss > 0):
+                    self.optimizer.zero_grad()
+                    loss.backward()
+                    self.optimizer.step()
 
             else:
                 with autocast():
@@ -357,7 +253,7 @@ class BaseRunner(object):
         data = batch_processor(batch, self.cfg.MODEL.dsbn)
         if len(data["img"]) > 1:
             warnings.warn(
-                "please re-write the 'runner.train_step()' function to make  use of "
+                "please re-write the 'runner.train_step()' function to make use of "
                 "mutual transformer."
             )
 
@@ -373,35 +269,19 @@ class BaseRunner(object):
         total_loss = 0
         meters = {}
         for key in self.criterions.keys():
-            if key == "cross_entropy":
-                loss = self.criterions[key](results, targets)[0]
-            else:
-                loss = self.criterions[key](results, targets)
-            if iter==self.cfg.TRAIN.iters-1:
-                if self._rank == 0:
-                    self.writer.add_scalar('loss_train/'+key,loss,self._epoch)
+            loss = self.criterions[key](results, targets)
             total_loss += loss * float(self.cfg.TRAIN.LOSS.losses[key])
             meters[key] = loss.item()
 
-        self.losses.append(total_loss)
-       
-        acc_1 = accuracy(results["prob"].data, targets.data)
-        meters["Acc@1"] = acc_1[0] 
-        self.accs.append(meters["Acc@1"])
-        if (iter==self.cfg.TRAIN.iters-1) & (self._rank==0):
-            t_loss = sum(self.losses)/len(self.losses)
-            acc_ = sum(self.accs)/len(self.accs)
-            self.writer.add_scalar("TRAIN/Acc",acc_,self._epoch)
-            self.writer.add_scalar("TRAIN/Total_loss",t_loss,self._epoch)
-            self.losses = []
-            self.accs = []
+        if "prob" in results.keys():
+            acc = accuracy(results["prob"].data, targets.data)
+            meters["Acc@1"] = acc[0]
 
         self.train_progress.update(meters)
 
         return total_loss
 
     def val(self):
-
         if not isinstance(self.model, list):
             model_list = [self.model]
         else:
@@ -411,7 +291,7 @@ class BaseRunner(object):
         for idx in range(len(model_list)):
             if len(model_list) > 1:
                 print("==> Val on the no.{} model".format(idx))
-            cmc, mAP,features,ids = val_reid(
+            cmc, mAP = val_reid(
                 self.cfg,
                 model_list[idx],
                 self.val_loader[0],
@@ -421,12 +301,7 @@ class BaseRunner(object):
                 self._rank,
                 print_freq=self.print_freq,
             )
-            print("val map : {}".format(mAP))
             better_mAP = max(better_mAP, mAP)
-
-            if self._rank == 0:
-                print("in rank 0 val")
-                self.writer.add_scalar("VAL_mAP/"+str(idx),torch.tensor(mAP,dtype = torch.float64),self._epoch)
 
         return better_mAP
 
@@ -451,7 +326,7 @@ class BaseRunner(object):
 
         if self._rank == 0:
             # only on cuda:0
-            self.save_model(True, self.cfg.work_dir) #is_best=True
+            self.save_model(is_best, self.cfg.work_dir)
 
     def save_model(self, is_best, fpath):
         if isinstance(self.model, list):
@@ -460,8 +335,8 @@ class BaseRunner(object):
             state_dict["best_mAP"] = self._best_mAP
             for idx, model in enumerate(self.model):
                 state_dict["state_dict_" + str(idx + 1)] = model.state_dict()
-            save_checkpoint(state_dict, is_best,self.cfg.task_id,
-                    fpath=osp.join(fpath, "checkpoint.pth"),fpath_id=osp.join(fpath, "checkpoint.pth"))
+            save_checkpoint(state_dict, is_best,
+                    fpath=osp.join(fpath, "checkpoint.pth"))
 
         elif isinstance(self.model, dict):
             state_dict = {}
@@ -469,26 +344,20 @@ class BaseRunner(object):
             state_dict["best_mAP"] = self._best_mAP
             for key in self.model.keys():
                 state_dict["state_dict"] = self.model[key].state_dict()
-                save_checkpoint(state_dict, is_best,self.cfg.task_id,
-                        fpath=osp.join(fpath, "checkpoint.pth"),fpath_id=osp.join(fpath, "checkpoint.pth"))
+                save_checkpoint(state_dict, False,
+                        fpath=osp.join(fpath, "checkpoint_"+key+".pth"))
 
         elif isinstance(self.model, nn.Module):
             state_dict = {}
             state_dict["epoch"] = self._epoch + 1
             state_dict["best_mAP"] = self._best_mAP
             state_dict["state_dict"] = self.model.state_dict()
-            save_checkpoint(state_dict, is_best,self.cfg.task_id,
-                        fpath=osp.join(fpath, "checkpoint.pth"),fpath_id=osp.join(fpath, "checkpoint.pth"))
+            save_checkpoint(state_dict, is_best,
+                        fpath=osp.join(fpath, "checkpoint.pth"))
 
         else:
             assert "Unknown type of model for save_model()"
-    def resume_bis(self,path):
-        self.load_model_bis(path)
-        synchronize()
-    def load_model_bis(self,path):
-        state_dict = load_checkpoint(path)
-        self._start_epoch = state_dict["epoch"]
-        self._best_mAP = state_dict["best_mAP"]
+
     def resume(self, path):
         # resume from a training checkpoint (not source pretrain)
         self.load_model(path)
@@ -496,7 +365,6 @@ class BaseRunner(object):
 
     def load_model(self, path):
         if isinstance(self.model, list):
-            print("model is list of models")
             assert osp.isfile(path)
             state_dict = load_checkpoint(path)
             for idx, model in enumerate(self.model):
@@ -511,14 +379,10 @@ class BaseRunner(object):
         elif isinstance(self.model, nn.Module):
             assert osp.isfile(path)
             state_dict = load_checkpoint(path)
-            if "state_dict" in state_dict.keys():
-                copy_state_dict(state_dict["state_dict"], self.model)
-            elif "state_dict_1" in state_dict.keys():
-                copy_state_dict(state_dict["state_dict_1"], self.model)
+            copy_state_dict(state_dict["state_dict"], self.model)
 
         self._start_epoch = state_dict["epoch"]
         self._best_mAP = state_dict["best_mAP"]
-        self.model_teacher = copy.deepcopy(self.model)
 
     @property
     def epoch(self):
@@ -550,11 +414,10 @@ class GANBaseRunner(BaseRunner):
         optimizer,
         criterions,
         train_loader,
-        writer,
         **kwargs
     ):
         super(GANBaseRunner, self).__init__(
-            cfg, model, optimizer, criterions, train_loader,writer, **kwargs
+            cfg, model, optimizer, criterions, train_loader, **kwargs
         )
 
         self.save_dir = osp.join(self.cfg.work_dir, 'images')

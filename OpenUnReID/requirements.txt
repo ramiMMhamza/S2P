@@ -9,10 +9,9 @@ six
 scipy
 opencv-python
 matplotlib
-faiss-gpu==1.7.2
+faiss-gpu>=1.6.3
 easydict
 pyyaml
 requests
 multiprocess
-tensorboard
 pandas

@@ -1,9 +1,8 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
-# Modified to support S2P losses
+# Written by Yixiao Ge
 
 import torch.nn as nn
 
-from .classification import CrossEntropyLoss, SoftEntropyLoss, KDLoss, MMD_loss, KLdivLoss, KDLossSP, KDLossLwF, MSELoss, KDLossAT
+from .classification import CrossEntropyLoss, SoftEntropyLoss
 from .memory import HybridMemory
 from .triplet import SoftmaxTripletLoss, SoftSoftmaxTripletLoss, TripletLoss
 from .gan_loss import GANLoss
@@ -15,8 +14,6 @@ def build_loss(
     num_classes=None,
     num_features=None,
     num_memory=None,
-    num_memory_target=None,
-    num_memory_source=None,
     triplet_key="pooling",
     cuda=False,
 ):
@@ -27,26 +24,6 @@ def build_loss(
         if loss_name == "cross_entropy":
             assert num_classes is not None
             criterion = CrossEntropyLoss(num_classes)
-        elif loss_name=="MMD_loss":
-            criterion = MMD_loss()
-
-        elif loss_name == 'kd_loss':
-            criterion = KDLoss()
-        
-        elif loss_name=="kl_loss":
-            criterion = KLdivLoss()
-        
-        elif loss_name=="KDLossSP":
-            criterion = KDLossSP()
-        
-        elif loss_name=="KDLossLwF":
-            criterion = KDLossLwF(T=2)
-        
-        elif loss_name=="KDLossMSE":
-            criterion = MSELoss()
-        
-        elif loss_name=="KDLossAT":
-            criterion = KDLossAT(p=2)
 
         elif loss_name == "soft_entropy":
             criterion = SoftEntropyLoss()
@@ -77,7 +54,7 @@ def build_loss(
             if "momentum" not in cfg:
                 cfg.momentum = 0.2
             criterion = HybridMemory(
-                num_features, num_memory, num_memory_target, num_memory_source, temp=cfg.temp, momentum=cfg.momentum
+                num_features, num_memory, temp=cfg.temp, momentum=cfg.momentum
             )
 
         elif (loss_name.startswith('gan')):

@@ -1,12 +1,11 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
-# Modified to support OUDA
+# Written by Yixiao Ge
 
 import collections
 
 import numpy as np
 import torch
 from sklearn.cluster import DBSCAN
-from scipy import spatial
+
 from ...utils.torch_utils import to_torch
 from ..utils.compute_dist import build_dist
 
@@ -14,24 +13,24 @@ __all__ = ["label_generator_dbscan_single", "label_generator_dbscan"]
 
 
 @torch.no_grad()
-def label_generator_dbscan_single(cfg, features, dist_matrix, eps, **kwargs):
-    assert isinstance(dist_matrix, np.ndarray)
+def label_generator_dbscan_single(cfg, features, dist, eps, **kwargs):
+    assert isinstance(dist, np.ndarray)
 
     # clustering
     min_samples = cfg.TRAIN.PSEUDO_LABELS.min_samples
     use_outliers = cfg.TRAIN.PSEUDO_LABELS.use_outliers
 
     cluster = DBSCAN(eps=eps, min_samples=min_samples, metric="precomputed", n_jobs=-1,)
-    labels = cluster.fit_predict(dist_matrix)
+    labels = cluster.fit_predict(dist)
     num_clusters = len(set(labels)) - (1 if -1 in labels else 0)
 
+    # cluster labels -> pseudo labels
+    # compute cluster centers
     centers = collections.defaultdict(list)
     outliers = 0
-    count_outliers = 0
     for i, label in enumerate(labels):
         if label == -1:
             if not use_outliers:
-                count_outliers += 1
                 continue
             labels[i] = num_clusters + outliers
             outliers += 1
@@ -45,18 +44,19 @@ def label_generator_dbscan_single(cfg, features, dist_matrix, eps, **kwargs):
     labels = to_torch(labels).long()
     num_clusters += outliers
 
-    return labels, centers, num_clusters,count_outliers
+    return labels, centers, num_clusters
 
 
 @torch.no_grad()
-def label_generator_dbscan(cfg, features,weighted_clustering=False, cuda=True, indep_thres=None, **kwargs):#features_source
+def label_generator_dbscan(cfg, features, cuda=True, indep_thres=None, **kwargs):
     assert cfg.TRAIN.PSEUDO_LABELS.cluster == "dbscan"
 
     if not cuda:
         cfg.TRAIN.PSEUDO_LABELS.search_type = 3
 
     # compute distance matrix by features
-    dist_matrix = build_dist(cfg.TRAIN.PSEUDO_LABELS, features, verbose=True)
+    dist = build_dist(cfg.TRAIN.PSEUDO_LABELS, features, verbose=True)
+
     features = features.cpu()
 
     # clustering
@@ -64,10 +64,10 @@ def label_generator_dbscan(cfg, features,weighted_clustering=False, cuda=True, i
 
     if len(eps) == 1:
         # normal clustering
-        labels, centers, num_classes, count_outliers = label_generator_dbscan_single(
-            cfg, features, dist_matrix, eps[0]
+        labels, centers, num_classes = label_generator_dbscan_single(
+            cfg, features, dist, eps[0]
         )
-        return labels, centers, num_classes, indep_thres, 
+        return labels, centers, num_classes, indep_thres
 
     else:
         assert (
@@ -76,11 +76,11 @@ def label_generator_dbscan(cfg, features,weighted_clustering=False, cuda=True, i
 
         print("adopt the reliability criterion for filtering clusters")
         eps = sorted(eps)
-        labels_tight, _, _ ,_= label_generator_dbscan_single(cfg, features, dist_matrix, eps[0])
-        labels_normal, _, num_classes,_ = label_generator_dbscan_single(
-            cfg, features, dist_matrix, eps[1]
+        labels_tight, _, _ = label_generator_dbscan_single(cfg, features, dist, eps[0])
+        labels_normal, _, num_classes = label_generator_dbscan_single(
+            cfg, features, dist, eps[1]
         )
-        labels_loose, _, _ ,_= label_generator_dbscan_single(cfg, features, dist_matrix, eps[2])
+        labels_loose, _, _ = label_generator_dbscan_single(cfg, features, dist, eps[2])
 
         # compute R_indep and R_comp
         N = labels_normal.size(0)

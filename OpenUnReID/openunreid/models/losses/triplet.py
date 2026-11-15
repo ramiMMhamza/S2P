@@ -1,4 +1,4 @@
-# Obtained from: https://github.com/open-mmlab/OpenUnReID
+# Written by Yixiao Ge
 
 import torch
 import torch.distributed as dist
@@ -95,7 +95,7 @@ class TripletLoss(nn.Module):
             .eq(all_targets.view(M, 1).expand(M, N).t())
             .float()
         )
-  
+
         dist_ap, dist_an = _batch_hard(mat_dist, mat_sim)
         assert dist_an.size(0) == dist_ap.size(0)
         y = torch.ones_like(dist_ap)

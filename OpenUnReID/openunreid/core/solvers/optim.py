@@ -12,7 +12,7 @@ def build_optimizer(
     models,
     optim="adam",
     lr=0.00035,
-    weight_decay=0,#5e-4,
+    weight_decay=5e-4,
     momentum=0.9,
     sgd_dampening=0,
     sgd_nesterov=False,

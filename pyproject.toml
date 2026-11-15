@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "s2p"
+version = "0.2.0"
+description = "Source-Guided Similarity Preservation for Online Person Re-Identification (WACV 2024)"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Hamza Rami" }]
+dependencies = [
+    "torch>=1.13",
+    "torchvision>=0.14",
+    "numpy",
+    "easydict",
+    "pyyaml",
+    "tensorboard",
+    # plus the vendored toolbox: pip install -e OpenUnReID (see README)
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
+[project.scripts]
+s2p-train = "s2p.train:main"
+
+[tool.setuptools]
+packages = ["s2p"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: end-to-end training on synthetic data (about a minute each on CPU)"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["OpenUnReID"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E501"]

@@ -1,6 +1,7 @@
 # Modified from https://github.com/JDAI-CV/fast-reid/blob/master/fastreid/data/transforms/build.py  # noqa
 
 import torchvision.transforms as T
+from torchvision.transforms import InterpolationMode  # S2P patch
 
 from .auto_augment import ImageNetPolicy
 from .gaussian_blur import GaussianBlur
@@ -20,7 +21,7 @@ def build_train_transformer(cfg):
         res.append(ImageNetPolicy(total_iters))
 
     # resize
-    res.append(T.Resize((cfg.DATA.height, cfg.DATA.width), interpolation=3))
+    res.append(T.Resize((cfg.DATA.height, cfg.DATA.width), interpolation=InterpolationMode.BICUBIC))
 
     # horizontal filp
     if cfg.DATA.TRAIN.is_flip:
@@ -66,7 +67,7 @@ def build_test_transformer(cfg):
     res = []
 
     # resize
-    res.append(T.Resize((cfg.DATA.height, cfg.DATA.width), interpolation=3))
+    res.append(T.Resize((cfg.DATA.height, cfg.DATA.width), interpolation=InterpolationMode.BICUBIC))
 
     # totensor
     res.append(T.ToTensor())
