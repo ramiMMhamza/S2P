@@ -1,7 +1,5 @@
 import os
 from torch.utils.tensorboard import SummaryWriter
-# import tensorflow as tf
-import tensorboard as tb
 import matplotlib.pyplot as plt
 from sklearn import manifold
 import io
@@ -39,7 +37,6 @@ from openunreid.utils.config import (
 from openunreid.utils.dist_utils import init_dist, synchronize, get_dist_info
 from openunreid.utils.file_utils import mkdir_if_missing
 from openunreid.utils.logger import Logger
-# tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
 from openunreid.utils.torch_utils import tensor2im
 from openunreid.data.utils.data_utils import save_image
 n_tasks = 5
@@ -318,10 +315,11 @@ def parge_config():
     cfg.exec = args.exec
     if cfg.exec==0:
         print("Training locally on naboo")
-        cfg.DATA_ROOT = Path(cfg.DATA_ROOT_local)
-        cfg.LOGS_ROOT = Path(cfg.LOGS_ROOT_local)
-        cfg.MODEL.backbone_path = cfg.MODEL.backbone_path_local
-        cfg.MODEL.source_pretrained = cfg.MODEL.source_pretrained_local
+        # fall back to the base keys when the config has no "_local" variant
+        cfg.DATA_ROOT = Path(cfg.get("DATA_ROOT_local", cfg.DATA_ROOT))
+        cfg.LOGS_ROOT = Path(cfg.get("LOGS_ROOT_local", cfg.LOGS_ROOT))
+        cfg.MODEL.backbone_path = cfg.MODEL.get("backbone_path_local", cfg.MODEL.backbone_path)
+        cfg.MODEL.source_pretrained = cfg.MODEL.get("source_pretrained_local", cfg.MODEL.source_pretrained)
     elif cfg.exec==2:
         print("training on slurm Cluster")
         cfg.DATA_ROOT = Path(cfg.DATA_ROOT_cluster)
@@ -350,12 +348,10 @@ def main():
     set_random_seed(cfg.TRAIN.seed, cfg.TRAIN.deterministic)
     rank,_,_ = get_dist_info()
     if rank == 0:
-        if cfg.exec==0:
-            writer = SummaryWriter(cfg.work_dir / 'logs_tb/',flush_secs=10)
-        elif cfg.exec==2:
-            writer = SummaryWriter(cfg.work_dir / 'logs_tb/',flush_secs=10)
-        else:
+        if cfg.exec==1:
             writer = SummaryWriter('/out/logs_tb/',flush_secs=10)
+        else:
+            writer = SummaryWriter(cfg.work_dir / 'logs_tb/',flush_secs=10)
     else :
         writer = None
     synchronize()
@@ -406,7 +402,7 @@ def main():
     if isinstance(model, (DataParallel, DistributedDataParallel)):
         num_features = model.module.net.num_features
     else:
-        num_features = model.num_features
+        num_features = model.net.num_features
 
     criterions = build_loss(
         cfg.TRAIN.LOSS,
@@ -561,7 +557,7 @@ def main():
         if isinstance(model, (DataParallel, DistributedDataParallel)):
             num_features = model.module.net.num_features
         else:
-            num_features = model.num_features
+            num_features = model.net.num_features
         print("num_features : {}".format(num_features))
         criterions = build_loss(
             cfg.TRAIN.LOSS,

@@ -4,7 +4,7 @@ Cython
 h5py
 pyzmq
 tornado
-pillow-simd
+pillow
 six
 scipy
 opencv-python
@@ -15,5 +15,4 @@ pyyaml
 requests
 multiprocess
 tensorboard
-tensorflow
 pandas

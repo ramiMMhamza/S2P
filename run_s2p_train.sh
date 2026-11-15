@@ -1,15 +1,18 @@
+#!/usr/bin/env bash
+# Usage: ./run_s2p_train.sh RUN_NAME [--epochs N --iters N --KDloss W --MMDloss W ...]
+# Can be launched from any directory: paths are resolved from this script's location.
+set -euo pipefail
 
-# export https_proxy="http://129.183.4.13:8080" 
-# export http_proxy="http://129.183.4.13:8080" 
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export CUBLAS_WORKSPACE_CONFIG=:16:8
 export CUDA_LAUNCH_BLOCKING=1
-PYTHON=${PYTHON:-"python"}
-METHOD="MMT" # SpCL(mean_net addet and cosidered as teacher)
-path=$1
-mkdir ./logs/$path
-WORK_DIR="./$path/" 
-export PYTHONPATH=./OpenUnReID/
+export PYTHONPATH="${REPO_DIR}/OpenUnReID${PYTHONPATH:+:${PYTHONPATH}}"
+
+PYTHON=${PYTHON:-"python3"}
+METHOD=${METHOD:-"MMT"} # MMT or SpCL
 GPUS=${GPUS:-2}
+RUN_NAME=$1
+shift
 
 while true # find unused tcp port
 do
@@ -19,8 +22,7 @@ do
         break;
     fi
 done
-# echo $@
-python3 -m torch.distributed.launch --nproc_per_node=$GPUS --master_port=$PORT --use_env \
-./S2P/OpenUnReID/tools/$METHOD/main.py ./S2P/OpenUnReID/tools/$METHOD/config.yaml --work-dir=${WORK_DIR} \
-    --launcher="pytorch" --tcp-port=${PORT}  --exec=2. ${@:2}
 
+"$PYTHON" -m torch.distributed.launch --nproc_per_node="$GPUS" --master_port="$PORT" --use_env \
+    "${REPO_DIR}/OpenUnReID/tools/${METHOD}/main.py" "${REPO_DIR}/OpenUnReID/tools/${METHOD}/config.yaml" \
+    --work-dir="${RUN_NAME}" --launcher="pytorch" --tcp-port="${PORT}" --exec=2. "$@"

@@ -5,9 +5,7 @@ import sys
 import time
 from datetime import timedelta
 from pathlib import Path
-import tensorflow as tf
 from sklearn import manifold
-import tensorboard as tb
 import torch, torchvision
 import numpy as np
 import matplotlib.pyplot as plt
@@ -34,7 +32,6 @@ from openunreid.utils.logger import Logger
 from openunreid.apis.test import val_reid
 import copy
 import io
-# tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
 def gen_plot(Y,color):
     """Create a pyplot plot and save to buffer."""
     plt.figure(figsize=(15,8))
@@ -319,10 +316,11 @@ def parge_config():
     cfg.exec = args.exec
     if cfg.exec==0:
         print("Training locally on naboo")
-        cfg.DATA_ROOT = Path(cfg.DATA_ROOT_local)
-        cfg.LOGS_ROOT = Path(cfg.LOGS_ROOT_local)
-        cfg.MODEL.backbone_path = cfg.MODEL.backbone_path_local
-        cfg.MODEL.source_pretrained = cfg.MODEL.source_pretrained_local
+        # fall back to the base keys when the config has no "_local" variant
+        cfg.DATA_ROOT = Path(cfg.get("DATA_ROOT_local", cfg.DATA_ROOT))
+        cfg.LOGS_ROOT = Path(cfg.get("LOGS_ROOT_local", cfg.LOGS_ROOT))
+        cfg.MODEL.backbone_path = cfg.MODEL.get("backbone_path_local", cfg.MODEL.backbone_path)
+        cfg.MODEL.source_pretrained = cfg.MODEL.get("source_pretrained_local", cfg.MODEL.source_pretrained)
     elif cfg.exec==2:
         print("training on slurm Cluster")
         cfg.DATA_ROOT = Path(cfg.DATA_ROOT_cluster)
@@ -350,12 +348,10 @@ def main():
     rank,_,_ = get_dist_info()
     print(rank)
     if rank == 0:
-        if cfg.exec==0:
-            writer = SummaryWriter(cfg.work_dir / 'logs_tb/',flush_secs=10)
-        elif cfg.exec==2:
-            writer = SummaryWriter(cfg.work_dir / 'logs_tb/',flush_secs=10)
-        else:
+        if cfg.exec==1:
             writer = SummaryWriter('/out/logs_tb/',flush_secs=10)
+        else:
+            writer = SummaryWriter(cfg.work_dir / 'logs_tb/',flush_secs=10)
     else :
         writer = None
     

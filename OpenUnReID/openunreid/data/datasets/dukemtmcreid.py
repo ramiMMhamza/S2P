@@ -143,7 +143,7 @@ class DukeMTMCreID(ImageDataset):
             print("task_id : {}".format(self.task_id))
             pid_container_bis = set()
             for key,value in pid2label.items():
-                if key in filtre:
+                if value in filtre:
                     pid_container_bis.add(key)
             pid_container = pid_container_bis
             pid2label = {pid: label for label, pid in enumerate(pid_container)}

@@ -51,10 +51,10 @@ class CustomDataset(ImageDataset):
         if isinstance(filtre,list):
             if type(filtre[0])==type("test"):
                 print("enter filtration similarities for randperson using Rank1-NN")
-                df[df["path"].isin(filtre)]
+                df = df[df["path"].isin(filtre)]
             else:
                 print("enter filtration similarities for randperson")
-                df[df["id"].isin(filtre)]
+                df = df[df["id"].isin(filtre)]
         
         if self.del_labels:
             df["id"] = 0

@@ -2,10 +2,6 @@ from .cuhk03np import CUHK03NP
 from .dukemtmcreid import DukeMTMCreID
 from .market1501 import Market1501
 from .msmt17 import MSMT17
-from .personx import PersonX
-from .vehicleid import VehicleID
-from .vehiclex import VehicleX
-from .veri import VeRi
 from .cuhk03 import CUHK03
 from .custom_reid import CustomDataset
 __all__ = ["build_dataset", "names"]
@@ -17,10 +13,6 @@ __factory = {
     "market1501": Market1501,
     "dukemtmcreid": DukeMTMCreID,
     "msmt17": MSMT17,
-    "personx": PersonX,
-    "veri": VeRi,
-    "vehicleid": VehicleID,
-    "vehiclex": VehicleX,
 }
 
 

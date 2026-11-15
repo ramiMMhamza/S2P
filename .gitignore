@@ -16,10 +16,10 @@ OpenUnReID/openunreid/core/metrics/rank_cylib/rank_cy.c
 OpenUnReID/openunreid/core/metrics/rank_cylib/*.html
 
 # Experiment outputs, data and weights
-logs/
-data/
-datasets/
-pretrained/
+/logs/
+/data/
+/datasets/
+/pretrained/
 *.pth
 *.pth.tar
 *.out
